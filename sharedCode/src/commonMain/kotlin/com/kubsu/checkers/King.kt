@@ -2,25 +2,25 @@ package com.kubsu.checkers
 
 import com.kubsu.checkers.data.*
 
-fun Board.needToMadeKing(cell: Cell): Boolean =
-    when (cell.type) {
+fun Cell.needToMadeKing(board: Board): Boolean =
+    when (type) {
         is CellType.Piece.White.Man ->
-            cell.row == lastIndex
+            row == board.lastIndex
 
         is CellType.Piece.Black.Man ->
-            cell.row == firstIndex
+            row == board.firstIndex
 
         else -> false
     }
 
-fun Board.setKing(cell: Cell): Board =
-    when (cell.type) {
+fun Cell.setKing(board: Board): Board =
+    when (type) {
         is CellType.Piece.White.Man ->
-            update(cell.copy(type = CellType.Piece.White.King))
+            board.update(copy(type = CellType.Piece.White.King))
 
         is CellType.Piece.Black.Man ->
-            update(cell.copy(type = CellType.Piece.Black.King))
+            board.update(copy(type = CellType.Piece.Black.King))
 
         else ->
-            throw IllegalArgumentException("Try to set king on cell: $cell")
+            throw IllegalArgumentException("Try to set king on cell: $this")
     }
