@@ -1,9 +1,9 @@
 package com.kubsu.checkers.data
 
-typealias Board = Matrix<CellType>
+typealias Board = Matrix<Cell>
 
 fun Board.update(cell: Cell): Board =
-    set(cell.row, cell.column, cell.type)
+    set(cell.row, cell.column, cell)
 
-fun Board.getCell(row: Row, column: Column): Cell =
-    Cell(row, column, get(row, column))
+fun Board.swap(first: Cell, second: Cell): Board =
+    set(first.row, first.column, second).set(second.row, second.column, first)

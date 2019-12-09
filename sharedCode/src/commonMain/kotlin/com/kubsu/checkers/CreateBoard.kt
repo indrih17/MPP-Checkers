@@ -5,19 +5,17 @@ import com.kubsu.checkers.data.*
 fun createBoard(size: Int): Board =
     matrix(size) { row, column ->
         if (isAccessible(row, column))
-            when {
-                row.isWhite -> CellType.Piece.White.Man
-                row.isBlack -> CellType.Piece.Black.Man
-                else -> CellType.Empty
+            when (row) {
+                in blackRows -> Cell.Piece.Man(row, column, Color.Black)
+                in whiteRows -> Cell.Piece.Man(row, column, Color.White)
+                else -> Cell.Empty(row, column)
             }
         else
-            CellType.Inaccessible
+            Cell.Inaccessible(row, column)
     }
 
 private fun isAccessible(row: Row, column: Column): Boolean =
     (row + column) % 2 != 0
 
-private val Row.isWhite: Boolean
-    inline get() = this in 0..2
-private val Row.isBlack: Boolean
-    inline get() = this in 5..7
+private val blackRows = 0..2
+private val whiteRows = 5..7
