@@ -1,4 +1,4 @@
-package com.kubsu.checkers
+package com.kubsu.checkers.functions
 
 import com.kubsu.checkers.data.*
 
