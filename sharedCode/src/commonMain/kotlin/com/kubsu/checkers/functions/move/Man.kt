@@ -1,23 +1,23 @@
-package com.kubsu.checkers.functions.man
+package com.kubsu.checkers.functions.move
 
 import com.kubsu.checkers.data.*
 import kotlin.math.abs
 
-fun Board.move(
+internal fun Board.move(
     current: Cell.Piece.Man,
     destination: Cell.Empty,
     score: Score
-): Either<Failure.IncorrectMove, MoveResult> =
-    when {
-        current isSimpleMove destination ->
-            Either.right(MoveResult(simpleMove(current, destination), score))
-
-        current isAttack destination ->
-            attack(current, destination, score)
-
-        else ->
+): Either<Failure.IncorrectMove, MoveResult> {
+    val either = if (isSimpleMove(current, destination)) {
+        Either.right(MoveResult(simpleMove(current, destination), score))
+    } else {
+        val middleCell = middle(current, destination)
+        if (middleCell is Cell.Piece && isAttack(current, destination, middleCell))
+            Either.right(attack(current, destination, middleCell, score))
+        else
             Either.left(Failure.IncorrectMove)
-    }.map { moveResult ->
+    }
+    return either.map { moveResult ->
         with(moveResult.board) {
             if (needToMadeKing(current))
                 moveResult.copy(board = setKing(current))
@@ -25,9 +25,10 @@ fun Board.move(
                 moveResult
         }
     }
+}
 
-private infix fun Cell.Piece.Man.isSimpleMove(destination: Cell.Empty): Boolean =
-    this toLeftOf destination || this toRightOf destination
+private fun isSimpleMove(current: Cell.Piece.Man, destination: Cell.Empty): Boolean =
+    current toLeftOf destination || current toRightOf destination
 
 private infix fun Cell.Piece.Man.toLeftOf(destination: Cell.Empty): Boolean =
     when (color) {
@@ -41,39 +42,33 @@ private infix fun Cell.Piece.Man.toRightOf(destination: Cell.Empty): Boolean =
         Color.Black -> row + 1 == destination.row && column - 1 == destination.column
     }
 
-private infix fun Cell.Piece.Man.isAttack(destination: Cell.Empty): Boolean =
-    isInAttackZone(row, destination.row) && isInAttackZone(column, destination.column)
+private fun isAttack(
+    current: Cell.Piece.Man,
+    destination: Cell.Empty,
+    middleCell: Cell.Piece
+): Boolean =
+    isInAttackZone(current.row, destination.row)
+            && isInAttackZone(current.column, destination.column)
+            && current isEnemy middleCell
 
 @Suppress("NOTHING_TO_INLINE")
 private inline fun isInAttackZone(a: Int, b: Int): Boolean = abs(a - b) == 2
-
-private fun Board.simpleMove(
-    current: Cell.Piece.Man,
-    destination: Cell.Empty
-): Board =
-    swap(current, destination)
-
-private fun Board.attack(
-    current: Cell.Piece.Man,
-    destination: Cell.Empty,
-    score: Score
-): Either<Failure.IncorrectMove, MoveResult> {
-    val middleCell = middle(current, destination)
-    return if (middleCell is Cell.Piece && current isEnemy middleCell)
-        Either.right(
-            MoveResult(
-                board = swap(current, destination).update(middleCell.toEmpty()),
-                score = score updateFor current.color
-            )
-        )
-    else
-        Either.left(Failure.IncorrectMove)
-}
 
 private fun Board.middle(first: Cell.Piece, second: Cell.Empty): Cell =
     get(
         row = average(first.row, second.row),
         column = average(first.column, second.column)
+    )
+
+private fun Board.attack(
+    current: Cell.Piece.Man,
+    destination: Cell.Empty,
+    middleCell: Cell.Piece,
+    score: Score
+) =
+    MoveResult(
+        board = swap(current, destination).update(middleCell.toEmpty()),
+        score = score updateFor current
     )
 
 @Suppress("NOTHING_TO_INLINE")

@@ -5,8 +5,8 @@ data class Score(
     val black: Int
 )
 
-infix fun Score.updateFor(color: Color) =
-    when (color) {
+infix fun Score.updateFor(cell: Cell.Piece) =
+    when (cell.color) {
         Color.White -> copy(white = white + 1)
         Color.Black -> copy(black = black + 1)
     }

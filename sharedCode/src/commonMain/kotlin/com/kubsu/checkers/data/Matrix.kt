@@ -14,7 +14,7 @@ val Matrix<*>.firstIndex: Int
 val Matrix<*>.lastIndex: Int
     inline get() = value.lastIndex
 
-inline operator fun <reified T> Matrix<T>.set(row: Row, column: Column, newValue: T): Matrix<T> {
+inline fun <reified T> Matrix<T>.set(row: Row, column: Column, newValue: T): Matrix<T> {
     val newColumn = value[row].set(column, newValue)
     return Matrix(value.set(row, newColumn))
 }
