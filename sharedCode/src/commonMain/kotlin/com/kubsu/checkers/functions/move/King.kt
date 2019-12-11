@@ -13,7 +13,7 @@ internal fun Board.move(
     if (current onDiagonal destination) {
         val intermediateCells = getIntermediateCells(current, destination)
         if (isSimpleMove(intermediateCells)) {
-            Either.right(MoveResult(simpleMove(current, destination), score))
+            Either.right(simpleMove(current, destination, score))
         } else {
             val enemy = intermediateCells.geSingleEnemyOrNull(current)
             if (enemy != null && isAttack(current, enemy))
@@ -83,5 +83,6 @@ private fun Board.attack(
 ) =
     MoveResult(
         board = swap(current, destination).update(enemy.toEmpty()),
-        score = score updateFor current
+        score = score updateFor current,
+        nextMove = current.color
     )

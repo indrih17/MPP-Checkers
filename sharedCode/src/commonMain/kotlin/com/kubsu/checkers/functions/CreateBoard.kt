@@ -6,8 +6,8 @@ fun createBoard(size: Int): Board =
     matrix(size) { row, column ->
         if (isAccessible(row, column))
             when (row) {
-                in blackRows -> Cell.Piece.Man(row, column, Color.Black)
-                in whiteRows -> Cell.Piece.Man(row, column, Color.White)
+                in blackRows -> Cell.Piece.Man(row, column, CellColor.Black)
+                in whiteRows -> Cell.Piece.Man(row, column, CellColor.White)
                 else -> Cell.Empty(row, column)
             }
         else

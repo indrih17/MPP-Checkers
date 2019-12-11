@@ -1,12 +1,12 @@
 package com.kubsu.checkers.data
 
 data class Score(
-    val white: Int,
-    val black: Int
+    val white: Int = 0,
+    val black: Int = 0
 )
 
 infix fun Score.updateFor(cell: Cell.Piece) =
     when (cell.color) {
-        Color.White -> copy(white = white + 1)
-        Color.Black -> copy(black = black + 1)
+        CellColor.White -> copy(white = white + 1)
+        CellColor.Black -> copy(black = black + 1)
     }

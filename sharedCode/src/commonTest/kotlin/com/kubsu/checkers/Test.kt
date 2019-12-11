@@ -1,12 +1,11 @@
 package com.kubsu.checkers
 
-import com.kubsu.checkers.data.Board
-import com.kubsu.checkers.data.Cell
-import com.kubsu.checkers.data.matrix
-import com.kubsu.checkers.data.set
-import com.kubsu.checkers.functions.move.getIntermediateCells
+import com.kubsu.checkers.data.*
+import com.kubsu.checkers.functions.move.move
+import com.kubsu.checkers.functions.move.needToMadeKing
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class Test {
     @Test
@@ -15,5 +14,24 @@ class Test {
         val new = original.set(1, 1, 100)
         val expected = matrix(8) { row, column -> if (row == 1 && column == 1) 100 else 0 }
         assertEquals(new, expected)
+    }
+
+    @Test
+    fun setKing() {
+        val board: Board = matrix(8, Cell::Empty)
+        val currentMan = Cell.Piece.Man(1, 0, CellColor.White)
+        val destination = Cell.Empty(0, 1)
+        val score = Score()
+        board.move(currentMan, destination, score).fold(
+            ifLeft = { throw IllegalStateException() },
+            ifRight = { assertTrue(it.board.get(0, 1) is Cell.Piece.King) }
+        )
+    }
+
+    @Test
+    fun needToMakeKing() {
+        val board: Board = matrix(8, Cell::Empty)
+        val man = Cell.Piece.Man(0, 2, CellColor.White)
+        assertEquals(true, board.needToMadeKing(man))
     }
 }

@@ -19,7 +19,7 @@ inline fun <reified T> Matrix<T>.set(row: Row, column: Column, newValue: T): Mat
     return Matrix(value.set(row, newColumn))
 }
 
-operator fun <T> Matrix<T>.get(row: Row, column: Column): T =
+fun <T> Matrix<T>.get(row: Row, column: Column): T =
     value[row][column]
 
 inline fun <reified T, reified R> Matrix<T>.map(block: (T) -> R): Matrix<R> =
