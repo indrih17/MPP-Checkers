@@ -24,12 +24,13 @@ sealed class Cell(open val row: Row, open val column: Column) {
     }
 
     data class Empty(override val row: Row, override val column: Column) : Cell(row, column)
-    data class Inaccessible(override val row: Row, override val column: Column) : Cell(row, column)
 }
 
 sealed class CellColor {
-    object White : CellColor()
-    object Black : CellColor()
+    object Light : CellColor()
+    object Dark : CellColor()
+
+    fun enemy(): CellColor = listOf(Light, Dark).minus(this).single()
 }
 
 fun Cell.Piece.Man.toKing() =
@@ -44,14 +45,10 @@ infix fun Cell.Piece.isEnemy(cell: Cell.Piece): Boolean =
 infix fun Cell.Piece.isSameColor(cell: Cell.Piece): Boolean =
     color == cell.color
 
-fun Cell.Piece.colorOfEnemy(): CellColor =
-    listOf(CellColor.White, CellColor.Black).minus(color).single()
-
 fun Cell.updateCoordinates(new: Cell): Cell =
     when (this) {
         is Cell.Piece.King -> copy(new.row, new.column)
         is Cell.Piece.Man -> copy(new.row, new.column)
         is Cell.Empty -> copy(new.row, new.column)
-        is Cell.Inaccessible -> copy(new.row, new.column)
     }
 

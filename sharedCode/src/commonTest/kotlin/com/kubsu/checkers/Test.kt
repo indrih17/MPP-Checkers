@@ -1,8 +1,8 @@
 package com.kubsu.checkers
 
 import com.kubsu.checkers.data.*
-import com.kubsu.checkers.functions.move.move
-import com.kubsu.checkers.functions.move.needToMadeKing
+import com.kubsu.checkers.functions.move.make.move
+import com.kubsu.checkers.functions.move.make.needToMadeKing
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -19,7 +19,7 @@ class Test {
     @Test
     fun setKing() {
         val board: Board = matrix(8, Cell::Empty)
-        val currentMan = Cell.Piece.Man(1, 0, CellColor.White)
+        val currentMan = Cell.Piece.Man(1, 0, CellColor.Light)
         val destination = Cell.Empty(0, 1)
         val score = Score()
         board.move(currentMan, destination, score).fold(
@@ -31,7 +31,7 @@ class Test {
     @Test
     fun needToMakeKing() {
         val board: Board = matrix(8, Cell::Empty)
-        val man = Cell.Piece.Man(0, 2, CellColor.White)
+        val man = Cell.Piece.Man(0, 2, CellColor.Light)
         assertEquals(true, board.needToMadeKing(man))
     }
 }

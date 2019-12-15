@@ -1,5 +1,6 @@
 package com.kubsu.checkers.data
 
+import com.kubsu.checkers.persistentList
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 
@@ -22,11 +23,22 @@ inline fun <reified T> Matrix<T>.set(row: Row, column: Column, newValue: T): Mat
 fun <T> Matrix<T>.get(row: Row, column: Column): T =
     value[row][column]
 
-inline fun <reified T, reified R> Matrix<T>.map(block: (T) -> R): Matrix<R> =
-    Matrix(value.map { it.map(block).toPersistentList() }.toPersistentList())
-
 inline fun <reified T> matrix(size: Int, defaultValue: T): Matrix<T> =
-    Matrix(persistentList(size) { persistentList(size) { defaultValue } })
+    Matrix(persistentList(size) {
+        persistentList(
+            size
+        ) { defaultValue }
+    })
 
 inline fun <reified T> matrix(size: Int, getValue: (row: Row, column: Column) -> T): Matrix<T> =
-    Matrix(persistentList(size) { row -> persistentList(size) { column -> getValue(row, column) } })
+    Matrix(persistentList(size) { row ->
+        persistentList(
+            size
+        ) { column -> getValue(row, column) }
+    })
+
+inline fun <reified R, reified T> Matrix<T>.map(block: (T) -> R): Matrix<R> =
+    Matrix(value.map { it.map(block).toPersistentList() }.toPersistentList())
+
+inline fun <reified R> Matrix<*>.filterIsInstance(): List<R> =
+    value.map { it.filterIsInstance<R>() }.flatten()

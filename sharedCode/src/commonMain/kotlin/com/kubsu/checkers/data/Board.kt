@@ -1,6 +1,6 @@
 package com.kubsu.checkers.data
 
-typealias Board = Matrix<Cell>
+typealias Board = Matrix<Cell?>
 
 fun Board.update(cell: Cell): Board =
     set(cell.row, cell.column, cell)

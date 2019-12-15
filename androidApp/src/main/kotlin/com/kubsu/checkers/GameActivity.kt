@@ -10,10 +10,10 @@ import android.widget.TableLayout
 import android.widget.TableRow
 import androidx.appcompat.app.AppCompatActivity
 import com.kubsu.checkers.data.*
+import com.kubsu.checkers.functions.cellWasSelected
 import com.kubsu.checkers.functions.createBoard
 import com.kubsu.checkers.functions.getWinner
 import com.kubsu.checkers.functions.isGameOver
-import com.kubsu.checkers.functions.move.cellWasSelected
 import kotlinx.android.synthetic.main.activity_game.*
 
 class GameActivity : AppCompatActivity() {
@@ -24,7 +24,7 @@ class GameActivity : AppCompatActivity() {
         val gameState = GameState(
             board = createBoard(8),
             score = Score(),
-            activePlayerColor = CellColor.White,
+            activePlayerColor = CellColor.Light,
             selectedCell = null
         )
 
@@ -49,7 +49,10 @@ class GameActivity : AppCompatActivity() {
                 board = gameState.board,
                 selectedCell = gameState.selectedCell,
                 onClick = { selectedCell ->
-                    cellWasSelected(gameState, cell = selectedCell).fold(
+                    cellWasSelected(
+                        gameState,
+                        cell = selectedCell
+                    ).fold(
                         ifLeft = { incorrectMove() },
                         ifRight = { render(it, incorrectMove, updateData, won) }
                     )
@@ -67,12 +70,12 @@ class GameActivity : AppCompatActivity() {
 
             for (column in board.columns) {
                 val current = board.get(row, column)
-
-                val imageView = context.cellImageView(current).also {
-                    it.setOnClickListener { onClick(current) }
+                val imageView = context.cellImageView(current)
+                if (current != null) {
+                    imageView.setOnClickListener { onClick(current) }
+                    if (current == selectedCell)
+                        imageView.setBackgroundColor(Color.GREEN)
                 }
-                if (current == selectedCell)
-                    imageView.setBackgroundColor(Color.GREEN)
                 tableRow.addView(imageView, column)
             }
             addView(tableRow, row)
@@ -92,40 +95,40 @@ class GameActivity : AppCompatActivity() {
         )
     }
 
-    private fun Context.cellImageView(cell: Cell) = ImageView(this).apply {
+    private fun Context.cellImageView(cell: Cell?) = ImageView(this).apply {
         setBackgroundColor(Color.BLACK)
         setImageResource(
             when (cell) {
                 is Cell.Piece.Man -> cell.res
                 is Cell.Piece.King -> cell.res
                 is Cell.Empty -> R.drawable.black_cell
-                is Cell.Inaccessible -> R.drawable.white_cell
+                null -> R.drawable.white_cell
             }
         )
     }
 
     private val Cell.Piece.Man.res: Int
-        get() = if (color is CellColor.White) R.drawable.white_man else R.drawable.black_man
+        get() = if (color is CellColor.Light) R.drawable.white_man else R.drawable.black_man
 
     private val Cell.Piece.King.res: Int
-        get() = if (color is CellColor.White) R.drawable.white_king else R.drawable.black_king
+        get() = if (color is CellColor.Light) R.drawable.white_king else R.drawable.black_king
 
     private fun incorrectMove() = toast("Некорректный ход")
 
     @SuppressLint("SetTextI18n")
     private fun updateData(state: GameState) {
-        score_text_view.text = "${state.score.black}:${state.score.white}"
+        score_text_view.text = "${state.score.dark}:${state.score.light}"
         message_text_view.text = when (state.activePlayerColor) {
-            CellColor.White -> "Ходит игрок №1 (Белые)"
-            CellColor.Black -> "Ходит игрок №2 (Чёрные)"
+            CellColor.Light -> "Ходит игрок №1 (Белые)"
+            CellColor.Dark -> "Ходит игрок №2 (Чёрные)"
         }
     }
 
     // Показать результат игры
     private fun won(color: CellColor) {
         message_text_view.text = when (color) {
-            CellColor.White -> "Победа за Белыми! Поздравляем!"
-            CellColor.Black -> "Победа за Чёрными! Поздравляем!"
+            CellColor.Light -> "Победа за Белыми! Поздравляем!"
+            CellColor.Dark -> "Победа за Чёрными! Поздравляем!"
         }
     }
 }

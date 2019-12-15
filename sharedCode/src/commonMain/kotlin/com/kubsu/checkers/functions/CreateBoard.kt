@@ -6,16 +6,16 @@ fun createBoard(size: Int): Board =
     matrix(size) { row, column ->
         if (isAccessible(row, column))
             when (row) {
-                in blackRows -> Cell.Piece.Man(row, column, CellColor.Black)
-                in whiteRows -> Cell.Piece.Man(row, column, CellColor.White)
+                in darkRows -> Cell.Piece.Man(row, column, CellColor.Dark)
+                in lightRows -> Cell.Piece.Man(row, column, CellColor.Light)
                 else -> Cell.Empty(row, column)
             }
         else
-            Cell.Inaccessible(row, column)
+            null
     }
 
 private fun isAccessible(row: Row, column: Column): Boolean =
     (row + column) % 2 != 0
 
-private val blackRows = 0..2
-private val whiteRows = 5..7
+private val darkRows = 0..2
+private val lightRows = 5..7

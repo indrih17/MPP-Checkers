@@ -1,6 +1,10 @@
-package com.kubsu.checkers.functions.move
+package com.kubsu.checkers.functions
 
+import com.kubsu.checkers.Either
 import com.kubsu.checkers.data.*
+import com.kubsu.checkers.functions.move.make.move
+import com.kubsu.checkers.map
+import com.kubsu.checkers.right
 
 fun cellWasSelected(gameState: GameState, cell: Cell): Either<Failure.IncorrectMove, GameState> {
     val selected = gameState.selectedCell
@@ -41,24 +45,3 @@ private fun Board.updateGameState(
             selectedCell = null
         )
     }
-
-private fun Board.move(
-    current: Cell.Piece,
-    destination: Cell.Empty,
-    score: Score
-): Either<Failure.IncorrectMove, MoveResult> =
-    when (current) {
-        is Cell.Piece.Man -> move(current, destination, score)
-        is Cell.Piece.King -> move(current, destination, score)
-    }
-
-internal fun Board.simpleMove(
-    current: Cell.Piece,
-    destination: Cell.Empty,
-    score: Score
-) =
-    MoveResult(
-        board = swap(current, destination),
-        score = score,
-        nextMove = current.colorOfEnemy()
-    )

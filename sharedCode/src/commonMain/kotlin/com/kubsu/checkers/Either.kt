@@ -1,4 +1,4 @@
-package com.kubsu.checkers.data
+package com.kubsu.checkers
 
 sealed class Either<out L, out R> {
     data class Left<T>(val value: T) : Either<T, Nothing>()
@@ -78,6 +78,8 @@ inline infix fun <A, B> B?.rightIfNotNull(default: () -> A): Either<A, B> = when
     else -> Either.Right(this)
 }
 
-fun <A> A.left(): Either<A, Nothing> = Either.Left(this)
+fun <A> A.left(): Either<A, Nothing> =
+    Either.Left(this)
 
-fun <A> A.right(): Either<Nothing, A> = Either.Right(this)
+fun <A> A.right(): Either<Nothing, A> =
+    Either.Right(this)

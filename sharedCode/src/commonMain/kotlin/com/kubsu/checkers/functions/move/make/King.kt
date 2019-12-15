@@ -1,6 +1,9 @@
-package com.kubsu.checkers.functions.move
+package com.kubsu.checkers.functions.move.make
 
+import com.kubsu.checkers.Either
 import com.kubsu.checkers.data.*
+import com.kubsu.checkers.left
+import com.kubsu.checkers.right
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlin.math.abs
@@ -26,7 +29,10 @@ internal fun Board.move(
     }
 
 private infix fun Cell.onDiagonal(cell: Cell): Boolean =
-    difference(row, cell.row) == difference(column, cell.column)
+    difference(
+        row,
+        cell.row
+    ) == difference(column, cell.column)
 
 @Suppress("NOTHING_TO_INLINE")
 private inline fun difference(a: Int, b: Int): Int = abs(a - b)
@@ -35,13 +41,24 @@ private fun Board.getIntermediateCells(
     current: Cell,
     destination: Cell
 ): ImmutableList<Cell> {
-    val (lower, higher) = getLowerAndHigher(current, destination)
+    val (lower, higher) = getLowerAndHigher(
+        current,
+        destination
+    )
     return getIntermediateCells(
         current = higher,
         destination = lower,
         columnIncrease = if (higher.column < lower.column) 1 else -1
     )
 }
+
+private data class PairCell(val lower: Cell, val higher: Cell)
+
+private fun getLowerAndHigher(first: Cell, second: Cell): PairCell =
+    if (first.row > second.row)
+        PairCell(lower = first, higher = second)
+    else
+        PairCell(lower = second, higher = first)
 
 private fun Board.getIntermediateCells(
     current: Cell,
@@ -52,19 +69,11 @@ private fun Board.getIntermediateCells(
     var row = current.row + 1
     var column = current.column + columnIncrease
     while (row < destination.row) {
-        result.add(get(row, column))
+        result.add(requireNotNull(get(row, column)))
         row++; column += columnIncrease
     }
     return result.toImmutableList()
 }
-
-private data class PairCell(val lower: Cell, val higher: Cell)
-
-private fun getLowerAndHigher(first: Cell, second: Cell): PairCell =
-    if (first.row > second.row)
-        PairCell(lower = first, higher = second)
-    else
-        PairCell(lower = second, higher = first)
 
 private fun isSimpleMove(intermediateCells: ImmutableList<Cell>): Boolean =
     intermediateCells.all { it is Cell.Empty }
