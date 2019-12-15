@@ -1,4 +1,4 @@
-package com.kubsu.checkers.data
+package com.kubsu.checkers.data.entities
 
 import com.kubsu.checkers.persistentList
 import kotlinx.collections.immutable.PersistentList
@@ -38,7 +38,9 @@ inline fun <reified T> matrix(size: Int, getValue: (row: Row, column: Column) ->
     })
 
 inline fun <reified R, reified T> Matrix<T>.map(block: (T) -> R): Matrix<R> =
-    Matrix(value.map { it.map(block).toPersistentList() }.toPersistentList())
+    Matrix(value.map {
+        it.map(block).toPersistentList()
+    }.toPersistentList())
 
 inline fun <reified R> Matrix<*>.filterIsInstance(): List<R> =
     value.map { it.filterIsInstance<R>() }.flatten()

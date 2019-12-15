@@ -1,4 +1,4 @@
-package com.kubsu.checkers.data
+package com.kubsu.checkers.data.entities
 
 typealias Board = Matrix<Cell?>
 

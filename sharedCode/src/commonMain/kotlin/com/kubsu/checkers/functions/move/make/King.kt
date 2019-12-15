@@ -1,7 +1,11 @@
 package com.kubsu.checkers.functions.move.make
 
 import com.kubsu.checkers.Either
-import com.kubsu.checkers.data.*
+import com.kubsu.checkers.data.Failure
+import com.kubsu.checkers.data.entities.*
+import com.kubsu.checkers.data.game.MoveResult
+import com.kubsu.checkers.data.game.Score
+import com.kubsu.checkers.data.game.updateFor
 import com.kubsu.checkers.left
 import com.kubsu.checkers.right
 import kotlinx.collections.immutable.ImmutableList

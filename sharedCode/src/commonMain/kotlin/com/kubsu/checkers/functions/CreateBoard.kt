@@ -1,6 +1,6 @@
 package com.kubsu.checkers.functions
 
-import com.kubsu.checkers.data.*
+import com.kubsu.checkers.data.entities.*
 
 fun createBoard(size: Int): Board =
     matrix(size) { row, column ->

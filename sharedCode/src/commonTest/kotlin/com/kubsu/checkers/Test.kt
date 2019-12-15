@@ -1,6 +1,7 @@
 package com.kubsu.checkers
 
-import com.kubsu.checkers.data.*
+import com.kubsu.checkers.data.entities.*
+import com.kubsu.checkers.data.game.Score
 import com.kubsu.checkers.functions.move.make.move
 import com.kubsu.checkers.functions.move.make.needToMadeKing
 import kotlin.test.Test
@@ -12,7 +13,8 @@ class Test {
     fun matrixSetOperator() {
         val original = matrix(8, 0)
         val new = original.set(1, 1, 100)
-        val expected = matrix(8) { row, column -> if (row == 1 && column == 1) 100 else 0 }
+        val expected =
+            matrix(8) { row, column -> if (row == 1 && column == 1) 100 else 0 }
         assertEquals(new, expected)
     }
 

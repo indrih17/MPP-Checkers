@@ -9,7 +9,9 @@ import android.widget.ImageView
 import android.widget.TableLayout
 import android.widget.TableRow
 import androidx.appcompat.app.AppCompatActivity
-import com.kubsu.checkers.data.*
+import com.kubsu.checkers.data.entities.*
+import com.kubsu.checkers.data.game.GameState
+import com.kubsu.checkers.data.game.Score
 import com.kubsu.checkers.functions.cellWasSelected
 import com.kubsu.checkers.functions.createBoard
 import com.kubsu.checkers.functions.getWinner
@@ -50,7 +52,7 @@ class GameActivity : AppCompatActivity() {
                 selectedCell = gameState.selectedCell,
                 onClick = { selectedCell ->
                     cellWasSelected(
-                        gameState,
+                        gameState = gameState,
                         cell = selectedCell
                     ).fold(
                         ifLeft = { incorrectMove() },

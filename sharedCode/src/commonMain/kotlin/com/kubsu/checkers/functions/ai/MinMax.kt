@@ -1,6 +1,7 @@
 package com.kubsu.checkers.functions.ai
 
-import com.kubsu.checkers.data.*
+import com.kubsu.checkers.data.entities.*
+import com.kubsu.checkers.data.minmax.*
 import com.kubsu.checkers.foldSame
 import com.kubsu.checkers.functions.move.get.getAllMovesSequence
 import kotlin.math.max
@@ -8,7 +9,12 @@ import kotlin.math.min
 
 fun Board.minimax(start: Cell.Piece, current: Cell, data: MinMaxData, player: MaximizingPlayer): BestMove? =
     if (data.depth == 0)
-        BestMove(current, current, player, evaluation(current, player))
+        BestMove(
+            current,
+            current,
+            player,
+            evaluation(current, player)
+        )
     else
         getAllMovesSequence(start, current)
             .map { minimax(start, it, data.decrementDepth(), player.enemy()) }

@@ -1,7 +1,13 @@
 package com.kubsu.checkers.functions.move.make
 
 import com.kubsu.checkers.Either
-import com.kubsu.checkers.data.*
+import com.kubsu.checkers.data.Failure
+import com.kubsu.checkers.data.entities.Board
+import com.kubsu.checkers.data.entities.Cell
+import com.kubsu.checkers.data.entities.enemy
+import com.kubsu.checkers.data.entities.swap
+import com.kubsu.checkers.data.game.MoveResult
+import com.kubsu.checkers.data.game.Score
 
 internal fun Board.move(
     current: Cell.Piece,

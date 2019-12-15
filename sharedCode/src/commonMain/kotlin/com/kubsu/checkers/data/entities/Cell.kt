@@ -1,4 +1,4 @@
-package com.kubsu.checkers.data
+package com.kubsu.checkers.data.entities
 
 typealias Row = Int
 typealias Column = Int
@@ -24,13 +24,6 @@ sealed class Cell(open val row: Row, open val column: Column) {
     }
 
     data class Empty(override val row: Row, override val column: Column) : Cell(row, column)
-}
-
-sealed class CellColor {
-    object Light : CellColor()
-    object Dark : CellColor()
-
-    fun enemy(): CellColor = listOf(Light, Dark).minus(this).single()
 }
 
 fun Cell.Piece.Man.toKing() =

@@ -1,4 +1,7 @@
-package com.kubsu.checkers.data
+package com.kubsu.checkers.data.game
+
+import com.kubsu.checkers.data.entities.Cell
+import com.kubsu.checkers.data.entities.CellColor
 
 data class Score(
     val light: Int = 0,

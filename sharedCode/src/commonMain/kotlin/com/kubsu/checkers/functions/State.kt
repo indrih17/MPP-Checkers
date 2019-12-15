@@ -1,7 +1,12 @@
 package com.kubsu.checkers.functions
 
 import com.kubsu.checkers.Either
-import com.kubsu.checkers.data.*
+import com.kubsu.checkers.data.Failure
+import com.kubsu.checkers.data.entities.Board
+import com.kubsu.checkers.data.entities.Cell
+import com.kubsu.checkers.data.entities.isSameColor
+import com.kubsu.checkers.data.game.GameState
+import com.kubsu.checkers.data.game.Score
 import com.kubsu.checkers.functions.move.make.move
 import com.kubsu.checkers.map
 import com.kubsu.checkers.right
