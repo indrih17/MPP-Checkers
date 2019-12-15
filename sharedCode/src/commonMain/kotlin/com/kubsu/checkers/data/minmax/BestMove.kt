@@ -22,4 +22,4 @@ fun BestMove.update(newElem: BestMove, current: Cell): BestMove {
 }
 
 fun BestMove.create(currentCell: Cell): BestMove =
-    copy(current = currentCell, player = player.enemy())
+    copy(destination = current, current = currentCell, player = player.enemy())
