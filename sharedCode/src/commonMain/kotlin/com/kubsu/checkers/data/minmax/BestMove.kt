@@ -1,8 +1,6 @@
 package com.kubsu.checkers.data.minmax
 
 import com.kubsu.checkers.data.entities.Cell
-import kotlin.math.max
-import kotlin.math.min
 
 data class BestMove(
     val current: Cell,
@@ -11,15 +9,15 @@ data class BestMove(
     val eval: Int
 )
 
-fun BestMove.update(newElem: BestMove, current: Cell): BestMove {
-    val newEval = if (player is MaximizingPlayer.Self) max(eval, newElem.eval) else min(eval, newElem.eval)
-    return copy(
-        current = current,
-        destination = if (newEval != eval) newElem.destination else destination,
+fun BestMove.update(newElem: BestMove, currentCell: Cell): BestMove {
+    val newEval = player.minMaxEval(eval, newElem.eval)
+    return BestMove(
+        current = currentCell,
+        destination = if (newEval != eval) newElem.current else current,
         eval = newEval,
         player = player.enemy()
     )
 }
 
 fun BestMove.create(currentCell: Cell): BestMove =
-    copy(destination = current, current = currentCell, player = player.enemy())
+    copy(current = currentCell, destination = current, player = player.enemy())

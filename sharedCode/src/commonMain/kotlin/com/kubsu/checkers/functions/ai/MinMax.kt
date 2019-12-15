@@ -2,31 +2,20 @@ package com.kubsu.checkers.functions.ai
 
 import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.minmax.*
-import com.kubsu.checkers.foldSame
+import com.kubsu.checkers.foldT
 import com.kubsu.checkers.functions.move.get.getAllMovesSequence
-import kotlin.math.max
-import kotlin.math.min
 
 fun Board.minimax(start: Cell.Piece, current: Cell, data: MinMaxData, player: MaximizingPlayer): BestMove? =
     if (data.depth == 0)
-        BestMove(
-            current,
-            current,
-            player,
-            evaluation(current, player)
-        )
+        BestMove(current = current, destination = current, player = player, eval = evaluation(current, player))
     else
         getAllMovesSequence(start, current)
             .map { minimax(start, it, data.decrementDepth(), player.enemy()) }
             .filterNotNull()
-            .takeWhile { condition(it.eval, player, data.alpha, data.beta) }
-            .foldSame(null) { acc, new -> acc?.update(new, current) ?: new.create(current) }
-
-private fun condition(eval: Int, player: MaximizingPlayer, alpha: Int, beta: Int): Boolean =
-    if (player is MaximizingPlayer.Self)
-        max(alpha, eval) < beta
-    else
-        min(beta, eval) > alpha
+            .takeWhile { player.minMaxCondition(it.eval, data.alpha, data.beta) }
+            .foldT(initial = null) { acc, new ->
+                acc?.update(new, current) ?: new.create(current)
+            }
 
 private fun Board.evaluation(cell: Cell, player: MaximizingPlayer): Int {
     val manCells = filterIsInstance<Cell.Piece.Man>()
