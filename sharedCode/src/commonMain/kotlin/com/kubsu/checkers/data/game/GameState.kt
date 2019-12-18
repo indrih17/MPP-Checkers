@@ -8,5 +8,6 @@ data class GameState(
     val board: Board,
     val score: Score,
     val activePlayerColor: CellColor,
-    val selectedCell: Cell.Piece?
+    val selectedCell: Cell.Piece?,
+    val movesWithoutAttacks: Int
 )

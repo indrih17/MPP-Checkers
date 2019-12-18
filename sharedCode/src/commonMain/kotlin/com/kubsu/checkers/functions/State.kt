@@ -2,10 +2,10 @@ package com.kubsu.checkers.functions
 
 import com.kubsu.checkers.Either
 import com.kubsu.checkers.data.Failure
-import com.kubsu.checkers.data.entities.Board
 import com.kubsu.checkers.data.entities.Cell
 import com.kubsu.checkers.data.entities.isSameColor
 import com.kubsu.checkers.data.game.GameState
+import com.kubsu.checkers.data.game.MoveType
 import com.kubsu.checkers.data.game.Score
 import com.kubsu.checkers.functions.move.make.move
 import com.kubsu.checkers.map
@@ -21,7 +21,7 @@ fun cellWasSelected(gameState: GameState, cell: Cell): Either<Failure.IncorrectM
             Either.right(gameState.copy(selectedCell = cell))
 
         cell is Cell.Empty ->
-            gameState.board.updateGameState(selected, cell, gameState.score)
+            gameState.updateGameState(selected, cell, gameState.score)
 
         else ->
             Either.right(gameState)
@@ -37,16 +37,20 @@ private fun justSelected(gameState: GameState, cell: Cell): GameState =
     else
         gameState
 
-private fun Board.updateGameState(
+private fun GameState.updateGameState(
     current: Cell.Piece,
     destination: Cell.Empty,
     score: Score
 ): Either<Failure.IncorrectMove, GameState> =
-    move(current, destination, score).map {
+    board.move(current, destination, score).map {
         GameState(
             board = it.board,
             score = it.score,
             activePlayerColor = it.nextMove,
-            selectedCell = null
+            selectedCell = null,
+            movesWithoutAttacks = if (it.moveType == MoveType.SimpleMove)
+                movesWithoutAttacks + 1
+            else
+                0
         )
     }

@@ -7,6 +7,7 @@ import com.kubsu.checkers.data.entities.Cell
 import com.kubsu.checkers.data.entities.enemy
 import com.kubsu.checkers.data.entities.swap
 import com.kubsu.checkers.data.game.MoveResult
+import com.kubsu.checkers.data.game.MoveType
 import com.kubsu.checkers.data.game.Score
 
 internal fun Board.move(
@@ -27,5 +28,6 @@ internal fun Board.simpleMove(
     MoveResult(
         board = swap(current, destination),
         score = score,
-        nextMove = current.color.enemy()
+        nextMove = current.color.enemy(),
+        moveType = MoveType.SimpleMove
     )

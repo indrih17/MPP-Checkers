@@ -4,6 +4,7 @@ import com.kubsu.checkers.Either
 import com.kubsu.checkers.data.Failure
 import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.game.MoveResult
+import com.kubsu.checkers.data.game.MoveType
 import com.kubsu.checkers.data.game.Score
 import com.kubsu.checkers.data.game.updateFor
 import com.kubsu.checkers.left
@@ -91,7 +92,8 @@ private fun Board.attack(
     MoveResult(
         board = swap(current, destination).update(middleCell.toEmpty()),
         score = score updateFor current,
-        nextMove = current.color
+        nextMove = current.color,
+        moveType = MoveType.Attack
     )
 
 @Suppress("NOTHING_TO_INLINE")

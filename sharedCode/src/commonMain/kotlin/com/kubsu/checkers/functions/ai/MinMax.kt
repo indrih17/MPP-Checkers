@@ -1,16 +1,18 @@
 package com.kubsu.checkers.functions.ai
 
 import com.kubsu.checkers.data.entities.*
+import com.kubsu.checkers.data.game.GameState
 import com.kubsu.checkers.data.minmax.*
 import com.kubsu.checkers.foldT
 import com.kubsu.checkers.functions.move.get.getAllMovesSequence
+import com.kubsu.checkers.functions.resultOrNull
 
-fun Board.minimax(start: Cell.Piece, current: Cell, data: MinMaxData, player: MaximizingPlayer): BestMove? =
-    if (data.depth == 0)
-        BestMove(current = current, destination = current, player = player, eval = evaluation(current, player))
+fun GameState.minimax(current: Cell, data: MinMaxData, player: MaximizingPlayer): BestMove? =
+    if (data.depth == 0 || resultOrNull() != null)
+        BestMove(current = current, destination = current, player = player, eval = board.evaluation(current, player))
     else
-        getAllMovesSequence(start, current)
-            .map { minimax(start, it, data.decrementDepth(), player.enemy()) }
+        getAllMovesSequence(current)
+            .map { minimax(it, data.decrementDepth(), player.enemy()) }
             .filterNotNull()
             .takeWhile { player.minMaxCondition(it.eval, data.alpha, data.beta) }
             .foldT(initial = null) { acc, new ->
