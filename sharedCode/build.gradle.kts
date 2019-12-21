@@ -14,6 +14,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("stdlib-common"))
                 implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3")
+                implementation("dev.icerock.moko:parcelize:0.2.0")
             }
         }
         val commonTest by getting {

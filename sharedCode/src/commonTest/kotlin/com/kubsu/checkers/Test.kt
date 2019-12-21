@@ -2,8 +2,8 @@ package com.kubsu.checkers
 
 import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.game.Score
-import com.kubsu.checkers.functions.move.make.move
-import com.kubsu.checkers.functions.move.make.needToMadeKing
+import com.kubsu.checkers.functions.move.human.move
+import com.kubsu.checkers.functions.move.human.needToMadeKing
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue

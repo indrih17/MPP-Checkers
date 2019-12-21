@@ -14,11 +14,20 @@ sealed class MaximizingPlayer(val color: CellColor) {
 fun MaximizingPlayer.minMaxEval(eval1: Int, eval2: Int): Int =
     if (this is MaximizingPlayer.Self) max(eval1, eval2) else min(eval1, eval2)
 
-fun MaximizingPlayer.minMaxCondition(eval: Int, alpha: Int, beta: Int): Boolean =
-    if (this is MaximizingPlayer.Self)
-        max(alpha, eval) < beta
-    else
-        min(beta, eval) > alpha
+fun MaximizingPlayer.minMaxDataOrNull(eval: Int, data: MinMaxData): MinMaxData? =
+    if (this is MaximizingPlayer.Self) {
+        val newAlpha = max(data.alpha, eval)
+        if (data.beta <= newAlpha)
+            data.copy(alpha = newAlpha)
+        else
+            null
+    } else {
+        val newBeta = min(data.beta, eval)
+        if (newBeta <= data.alpha)
+            data.copy(beta = newBeta)
+        else
+            null
+    }
 
 fun MaximizingPlayer.enemy(): MaximizingPlayer =
     if (this is MaximizingPlayer.Enemy)

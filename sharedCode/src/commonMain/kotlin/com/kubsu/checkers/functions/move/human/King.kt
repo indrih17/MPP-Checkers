@@ -1,4 +1,4 @@
-package com.kubsu.checkers.functions.move.make
+package com.kubsu.checkers.functions.move.human
 
 import com.kubsu.checkers.Either
 import com.kubsu.checkers.data.Failure
@@ -14,18 +14,18 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlin.math.abs
 
 internal fun Board.move(
-    current: Cell.Piece.King,
-    destination: Cell.Empty,
+    start: Cell.Piece.King,
+    finish: Cell.Empty,
     score: Score
 ): Either<Failure.IncorrectMove, MoveResult> =
-    if (current onDiagonal destination) {
-        val intermediateCells = getIntermediateCells(current, destination)
+    if (start onDiagonal finish) {
+        val intermediateCells = getIntermediateCells(start, finish)
         if (isSimpleMove(intermediateCells)) {
-            Either.right(simpleMove(current, destination, score))
+            Either.right(simpleMove(start, finish, score))
         } else {
-            val enemy = intermediateCells.geSingleEnemyOrNull(current)
-            if (enemy != null && isAttack(current, enemy))
-                Either.right(attack(current, destination, enemy, score))
+            val enemy = intermediateCells.geSingleEnemyOrNull(start)
+            if (enemy != null && isAttack(start, enemy))
+                Either.right(attack(start, finish, enemy, score))
             else
                 Either.left(Failure.IncorrectMove)
         }
@@ -34,25 +34,19 @@ internal fun Board.move(
     }
 
 private infix fun Cell.onDiagonal(cell: Cell): Boolean =
-    difference(
-        row,
-        cell.row
-    ) == difference(column, cell.column)
+    difference(row, cell.row) == difference(column, cell.column)
 
 @Suppress("NOTHING_TO_INLINE")
 private inline fun difference(a: Int, b: Int): Int = abs(a - b)
 
 private fun Board.getIntermediateCells(
-    current: Cell,
-    destination: Cell
+    start: Cell,
+    finish: Cell
 ): ImmutableList<Cell> {
-    val (lower, higher) = getLowerAndHigher(
-        current,
-        destination
-    )
+    val (lower, higher) = getLowerAndHigher(start, finish)
     return getIntermediateCells(
-        current = higher,
-        destination = lower,
+        start = higher,
+        finish = lower,
         columnIncrease = if (higher.column < lower.column) 1 else -1
     )
 }
@@ -66,14 +60,14 @@ private fun getLowerAndHigher(first: Cell, second: Cell): PairCell =
         PairCell(lower = second, higher = first)
 
 private fun Board.getIntermediateCells(
-    current: Cell,
-    destination: Cell,
+    start: Cell,
+    finish: Cell,
     columnIncrease: Int
 ): ImmutableList<Cell> {
     val result = mutableListOf<Cell>()
-    var row = current.row + 1
-    var column = current.column + columnIncrease
-    while (row < destination.row) {
+    var row = start.row + 1
+    var column = start.column + columnIncrease
+    while (row < finish.row) {
         result.add(requireNotNull(get(row, column)))
         row++; column += columnIncrease
     }
@@ -83,21 +77,21 @@ private fun Board.getIntermediateCells(
 private fun isSimpleMove(intermediateCells: ImmutableList<Cell>): Boolean =
     intermediateCells.all { it is Cell.Empty }
 
-private fun isAttack(current: Cell.Piece.King, enemy: Cell.Piece): Boolean =
-    current isEnemy enemy
+private fun isAttack(start: Cell.Piece.King, enemy: Cell.Piece): Boolean =
+    start isEnemy enemy
 
-private fun Collection<Cell>.geSingleEnemyOrNull(current: Cell.Piece): Cell.Piece? =
-    filterIsInstance<Cell.Piece>().singleOrNull(current::isEnemy)
+private fun Collection<Cell>.geSingleEnemyOrNull(start: Cell.Piece): Cell.Piece? =
+    filterIsInstance<Cell.Piece>().singleOrNull(start::isEnemy)
 
 private fun Board.attack(
-    current: Cell.Piece.King,
-    destination: Cell.Empty,
+    start: Cell.Piece.King,
+    finish: Cell.Empty,
     enemy: Cell.Piece,
     score: Score
 ) =
     MoveResult(
-        board = swap(current, destination).update(enemy.toEmpty()),
-        score = score updateFor current,
-        nextMove = current.color,
+        board = swap(start, finish).update(enemy.toEmpty()),
+        score = score updateFor start,
+        nextMove = start.color,
         moveType = MoveType.Attack
     )

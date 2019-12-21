@@ -3,27 +3,40 @@ package com.kubsu.checkers.functions.ai
 import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.game.GameState
 import com.kubsu.checkers.data.minmax.*
-import com.kubsu.checkers.foldT
-import com.kubsu.checkers.functions.move.get.getAllMovesSequence
-import com.kubsu.checkers.functions.resultOrNull
+import com.kubsu.checkers.completableFold
+import com.kubsu.checkers.functions.isGameOver
+import com.kubsu.checkers.functions.move.ai.getAllMovesSequence
 
-fun GameState.minimax(current: Cell, data: MinMaxData, player: MaximizingPlayer): BestMove? =
-    if (data.depth == 0 || resultOrNull() != null)
-        BestMove(current = current, destination = current, player = player, eval = board.evaluation(current, player))
+fun GameState.minimax(
+    depth: Int,
+    startCell: Cell.Piece,
+    current: Cell = startCell,
+    data: MinMaxData = MinMaxData(alpha = Int.MIN_VALUE, beta = Int.MAX_VALUE),
+    player: MaximizingPlayer = MaximizingPlayer.Self(activePlayerColor)
+): BestMove? =
+    if (depth == 0 || isGameOver()) // TODO is game over in position
+        board.createBestMove(current, data, player)
     else
-        getAllMovesSequence(current)
-            .map { minimax(it, data.decrementDepth(), player.enemy()) }
+        getAllMovesSequence(startCell, current)
+            .map { minimax(depth - 1, startCell, it, data, player.enemy()) }
             .filterNotNull()
-            .takeWhile { player.minMaxCondition(it.eval, data.alpha, data.beta) }
-            .foldT(initial = null) { acc, new ->
-                acc?.update(new, current) ?: new.create(current)
+            .completableFold(initial = null) { acc, new, completeFold ->
+                val bestMove = acc?.update(new) ?: new.create(current)
+                val minMaxData = player.minMaxDataOrNull(new.eval, new.minMaxData)
+                if (minMaxData != null)
+                    bestMove.copy(minMaxData = minMaxData).also { completeFold() }
+                else
+                    bestMove
             }
+
+private fun Board.createBestMove(cell: Cell, data: MinMaxData, player: MaximizingPlayer): BestMove =
+    BestMove(cell, cell, player, evaluation(cell, player), data)
 
 private fun Board.evaluation(cell: Cell, player: MaximizingPlayer): Int {
     val manCells = filterIsInstance<Cell.Piece.Man>()
     val kingCells = filterIsInstance<Cell.Piece.King>()
-    val mans = manCells.count(player::isEnemy) - manCells.count(player::isSelf)
-    val kings = kingCells.count(player::isEnemy) - kingCells.count(player::isSelf)
+    val mans = manCells.count(player::isSelf) - manCells.count(player::isEnemy)
+    val kings = kingCells.count(player::isSelf) - kingCells.count(player::isEnemy)
     return mans + 3 * kings - if (isBadMove(cell, player)) 2 else 0
 }
 

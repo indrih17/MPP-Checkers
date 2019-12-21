@@ -3,21 +3,20 @@ package com.kubsu.checkers.data.minmax
 import com.kubsu.checkers.data.entities.Cell
 
 data class BestMove(
-    val current: Cell,
-    val destination: Cell,
+    val startCell: Cell,
+    val finishCell: Cell,
     val player: MaximizingPlayer,
-    val eval: Int
+    val eval: Int,
+    val minMaxData: MinMaxData
 )
 
-fun BestMove.update(newElem: BestMove, currentCell: Cell): BestMove {
+fun BestMove.update(newElem: BestMove): BestMove {
     val newEval = player.minMaxEval(eval, newElem.eval)
-    return BestMove(
-        current = currentCell,
-        destination = if (newEval != eval) newElem.current else current,
+    return copy(
         eval = newEval,
-        player = player.enemy()
+        finishCell = if (newEval != eval) newElem.startCell else startCell
     )
 }
 
-fun BestMove.create(currentCell: Cell): BestMove =
-    copy(current = currentCell, destination = current, player = player.enemy())
+fun BestMove.create(cell: Cell): BestMove =
+    copy(startCell = cell, finishCell = startCell, player = player.enemy())

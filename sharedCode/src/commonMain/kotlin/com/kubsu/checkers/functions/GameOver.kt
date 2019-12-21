@@ -4,37 +4,33 @@ import com.kubsu.checkers.data.entities.Cell
 import com.kubsu.checkers.data.entities.CellColor
 import com.kubsu.checkers.data.entities.filterIsInstance
 import com.kubsu.checkers.data.game.GameState
-import com.kubsu.checkers.data.game.Score
 
 private const val pieceSize = 12
 private const val numberOfPiecesForDraw = 3
 
-fun Score.isGameOver(): Boolean =
-    light == pieceSize || dark == pieceSize
+fun GameState.isGameOver(): Boolean =
+    gameResultOrNull() != null
 
-fun Score.getWinner(): CellColor =
-    if (light == pieceSize) CellColor.Light else CellColor.Dark
-
-enum class Result {
+enum class GameResult {
     LightWon,
     DarkWon,
     Draw
 }
 
-fun GameState.resultOrNull(): Result? =
+fun GameState.gameResultOrNull(): GameResult? =
     if (score.light == pieceSize) {
-        Result.LightWon
+        GameResult.LightWon
     } else if (score.dark == pieceSize) {
-        Result.DarkWon
+        GameResult.DarkWon
     } else {
-        val cells = board.filterIsInstance<Cell.Piece>()
-        val lightCells = cells.count { it.color == CellColor.Light }
-        val darkCells = cells.count { it.color == CellColor.Dark }
+        val pieces = board.filterIsInstance<Cell.Piece>()
+        val lightPieces = pieces.count { it.color == CellColor.Light }
+        val darkPieces = pieces.count { it.color == CellColor.Dark }
         if (
-            (lightCells <= numberOfPiecesForDraw || darkCells <= numberOfPiecesForDraw)
+            (lightPieces <= numberOfPiecesForDraw || darkPieces <= numberOfPiecesForDraw)
             && movesWithoutAttacks == 15
         )
-            Result.Draw
+            GameResult.Draw
         else
             null
     }
