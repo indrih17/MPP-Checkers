@@ -3,6 +3,7 @@ package com.kubsu.checkers.render
 import android.graphics.Color
 import android.widget.TableLayout
 import com.kubsu.checkers.GameType
+import com.kubsu.checkers.data.Failure
 import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.game.GameState
 import com.kubsu.checkers.data.game.MoveState
@@ -10,12 +11,15 @@ import com.kubsu.checkers.fold
 import com.kubsu.checkers.functions.GameResult
 import com.kubsu.checkers.functions.gameResultOrNull
 import com.kubsu.checkers.functions.move.human.makeMove
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
-internal fun GameType.HumanVsHuman.render(
+internal suspend fun GameType.HumanVsHuman.render(
     tableLayout: TableLayout,
+    mainScope: CoroutineScope,
     moveResult: MoveState,
-    incorrectMove: () -> Unit,
     updateData: (GameState) -> Unit,
+    onFail: (Failure.IncorrectMove) -> Unit,
     endGame: (GameResult) -> Unit
 ) {
     tableLayout.clear()
@@ -26,18 +30,22 @@ internal fun GameType.HumanVsHuman.render(
     else
         tableLayout.render(
             moveResult = moveResult,
+            mainScope = mainScope,
             onClick = { clickedCell ->
                 makeMove(moveResult, clickedCell).fold(
-                    ifLeft = { incorrectMove() },
-                    ifRight = { render(tableLayout, it, incorrectMove, updateData, endGame) }
+                    ifLeft = onFail,
+                    ifRight = {
+                        render(tableLayout, mainScope, it, updateData, onFail, endGame)
+                    }
                 )
             }
         )
 }
 
-private fun TableLayout.render(
+private inline fun TableLayout.render(
     moveResult: MoveState,
-    onClick: (Cell) -> Unit
+    mainScope: CoroutineScope,
+    crossinline onClick: suspend (Cell) -> Unit
 ) {
     val board = moveResult.gameState.board
     for (row in board.rows) {
@@ -47,7 +55,7 @@ private fun TableLayout.render(
             val current = board.get(row, column)
             val imageView = context.cellImageView(current)
             if (current != null) {
-                imageView.setOnClickListener { onClick(current) }
+                imageView.setOnClickListener { mainScope.launch { onClick(current) } }
                 if (current == moveResult.startCell)
                     imageView.setBackgroundColor(Color.GREEN)
             }

@@ -6,15 +6,20 @@ data class BestMove(
     val startCell: Cell,
     val finishCell: Cell,
     val player: MaximizingPlayer,
-    val eval: Int,
-    val minMaxData: MinMaxData
+    val minMaxData: MinMaxData,
+    val eval: Int
 )
 
 fun BestMove.update(newElem: BestMove): BestMove {
     val newEval = player.minMaxEval(eval, newElem.eval)
     return copy(
         eval = newEval,
-        finishCell = if (newEval != eval) newElem.startCell else startCell
+        minMaxData = newElem.minMaxData,
+        finishCell = when {
+            startCell == finishCell -> newElem.startCell
+            newEval != eval -> newElem.startCell
+            else -> finishCell
+        }
     )
 }
 

@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.kubsu.checkers.GameType
 import com.kubsu.checkers.R
+import com.kubsu.checkers.data.Failure
 import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.game.GameState
 import com.kubsu.checkers.data.game.MoveState
@@ -12,8 +13,11 @@ import com.kubsu.checkers.functions.*
 import com.kubsu.checkers.render.render
 import com.kubsu.checkers.toast
 import kotlinx.android.synthetic.main.activity_game.*
+import kotlinx.coroutines.*
 
 class GameActivity : AppCompatActivity() {
+    private val mainScope = MainScope()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
@@ -22,19 +26,27 @@ class GameActivity : AppCompatActivity() {
             gameState = GameState(boardSize = 8, playerColor = CellColor.Light),
             startCell = null
         )
-        when (val gameType = intent.getParcelableExtra<GameType>(gameTypeArg)) {
-            is GameType.HumanVsHuman ->
-                gameType.render(board_table_layout, moveState, ::incorrectMove, ::updateData, ::endGame)
 
-            is GameType.AiVsAi ->
-                gameType.render(board_table_layout, moveState, ::updateData, ::endGame)
+        mainScope.launch {
+            when (val gameType = intent.getParcelableExtra<GameType>(gameTypeArg)) {
+                is GameType.HumanVsHuman ->
+                    gameType.render(board_table_layout, mainScope, moveState, ::updateData, ::incorrectMove, ::endGame)
+
+                is GameType.AiVsAi ->
+                    gameType.render(board_table_layout, moveState, ::updateData, ::endGame)
+            }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mainScope.cancel()
     }
 
     override fun onBackPressed() =
         finish()
 
-    private fun incorrectMove() = toast("Некорректный ход")
+    private fun incorrectMove(failure: Failure.IncorrectMove) = toast("Некорректный ход")
 
     @SuppressLint("SetTextI18n")
     private fun updateData(state: GameState) {

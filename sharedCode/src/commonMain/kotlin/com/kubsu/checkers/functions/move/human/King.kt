@@ -27,10 +27,10 @@ internal fun Board.move(
             if (enemy != null && isAttack(start, enemy))
                 Either.right(attack(start, finish, enemy, score))
             else
-                Either.left(Failure.IncorrectMove)
+                Either.left(Failure.IncorrectMove(start, finish))
         }
     } else {
-        Either.left(Failure.IncorrectMove)
+        Either.left(Failure.IncorrectMove(start, finish))
     }
 
 private infix fun Cell.onDiagonal(cell: Cell): Boolean =

@@ -16,7 +16,6 @@ allprojects {
         google()
         jcenter()
         mavenCentral()
-        maven("https://dl.bintray.com/icerockdev/moko")
     }
 
     // workaround for https://youtrack.jetbrains.com/issue/KT-27170

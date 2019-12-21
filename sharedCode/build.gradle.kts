@@ -14,7 +14,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("stdlib-common"))
                 implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3")
-                implementation("dev.icerock.moko:parcelize:0.2.0")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.3")
             }
         }
         val commonTest by getting {
@@ -26,6 +26,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(kotlin("stdlib"))
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.3")
             }
         }
         val androidTest by getting {

@@ -6,9 +6,9 @@ import com.kubsu.checkers.data.entities.enemy
 import kotlin.math.max
 import kotlin.math.min
 
-sealed class MaximizingPlayer(val color: CellColor) {
-    class Enemy(color: CellColor) : MaximizingPlayer(color)
-    class Self(color: CellColor) : MaximizingPlayer(color)
+sealed class MaximizingPlayer(open val color: CellColor) {
+    data class Enemy(override val color: CellColor) : MaximizingPlayer(color)
+    data class Self(override val color: CellColor) : MaximizingPlayer(color)
 }
 
 fun MaximizingPlayer.minMaxEval(eval1: Int, eval2: Int): Int =

@@ -24,7 +24,7 @@ internal fun Board.move(
         if (middleCell is Cell.Piece && isAttack(start, finish, middleCell))
             Either.right(attack(start, finish, middleCell, score))
         else
-            Either.left(Failure.IncorrectMove)
+            Either.left(Failure.IncorrectMove(start, finish))
     }
     return either.map { it.checkAndSetKing(start, finish) }
 }

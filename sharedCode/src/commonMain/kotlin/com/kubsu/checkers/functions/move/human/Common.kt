@@ -6,23 +6,26 @@ import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.game.*
 import com.kubsu.checkers.map
 import com.kubsu.checkers.right
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
-fun makeMove(moveState: MoveState, finishCell: Cell): Either<Failure.IncorrectMove, MoveState> {
-    val (gameState, startCell) = moveState
-    return when {
-        startCell == null ->
-            Either.right(justSelected(gameState, finishCell))
+suspend fun makeMove(moveState: MoveState, finishCell: Cell): Either<Failure.IncorrectMove, MoveState> =
+    withContext(Dispatchers.Default) {
+        val (gameState, startCell) = moveState
+        return@withContext when {
+            startCell == null ->
+                Either.right(justSelected(gameState, finishCell))
 
-        finishCell is Cell.Piece && startCell isSameColor finishCell ->
-            Either.right(MoveState(gameState, finishCell))
+            finishCell is Cell.Piece && startCell isSameColor finishCell ->
+                Either.right(MoveState(gameState, finishCell))
 
-        finishCell is Cell.Empty ->
-            gameState.updateGameState(startCell, finishCell, gameState.score)
+            finishCell is Cell.Empty ->
+                gameState.updateGameState(startCell, finishCell, gameState.score)
 
-        else ->
-            Either.right(MoveState(gameState, startCell))
+            else ->
+                Either.right(MoveState(gameState, startCell))
+        }
     }
-}
 
 private fun justSelected(gameState: GameState, finish: Cell): MoveState =
     if (finish is Cell.Piece && gameState.activePlayerColor == finish.color)

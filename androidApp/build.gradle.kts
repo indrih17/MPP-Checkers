@@ -18,8 +18,8 @@ android {
         minSdkVersion(21)
         targetSdkVersion(29)
 
-        versionName = "0.4.2-rc01"
-        versionCode = 26
+        versionName = "0.5.0-rc02"
+        versionCode = 27
 
         base.archivesBaseName = "${applicationName}_$versionName"
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"

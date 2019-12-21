@@ -35,8 +35,14 @@ fun Cell.Piece.toEmpty() =
 infix fun Cell.Piece.isEnemy(cell: Cell.Piece): Boolean =
     color != cell.color
 
+infix fun Cell.Piece.isEnemy(cellColor: CellColor): Boolean =
+    color != cellColor
+
 infix fun Cell.Piece.isSameColor(cell: Cell.Piece): Boolean =
     color == cell.color
+
+infix fun Cell.Piece.isSameColor(cellColor: CellColor): Boolean =
+    color == cellColor
 
 fun Cell.updateCoordinates(new: Cell): Cell =
     when (this) {
