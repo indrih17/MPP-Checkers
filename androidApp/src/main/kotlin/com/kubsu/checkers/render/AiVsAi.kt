@@ -7,8 +7,9 @@ import com.kubsu.checkers.data.game.GameState
 import com.kubsu.checkers.data.game.MoveState
 import com.kubsu.checkers.fold
 import com.kubsu.checkers.functions.GameResult
+import com.kubsu.checkers.functions.ai.makeAIMove
 import com.kubsu.checkers.functions.gameResultOrNull
-import com.kubsu.checkers.functions.move.ai.makeAIMove
+import kotlinx.coroutines.delay
 
 internal suspend fun GameType.AiVsAi.render(
     tableLayout: TableLayout,
@@ -16,8 +17,6 @@ internal suspend fun GameType.AiVsAi.render(
     updateData: (GameState) -> Unit,
     endGame: (GameResult) -> Unit
 ) {
-    println(moveState.gameState.activePlayerColor)
-    println(moveState.gameState.score)
     tableLayout.clear()
     val gameState = moveState.gameState
     updateData(gameState)

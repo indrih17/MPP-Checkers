@@ -92,6 +92,6 @@ private fun Board.attack(
     MoveResult(
         board = swap(start, finish).update(enemy.toEmpty()),
         score = score updateFor start,
-        nextMove = start.color,
+        nextMove = start.color.enemy(),
         moveType = MoveType.Attack
     )

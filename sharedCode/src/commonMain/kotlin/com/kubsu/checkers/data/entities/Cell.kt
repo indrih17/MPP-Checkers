@@ -41,9 +41,6 @@ infix fun Cell.Piece.isEnemy(cellColor: CellColor): Boolean =
 infix fun Cell.Piece.isSameColor(cell: Cell.Piece): Boolean =
     color == cell.color
 
-infix fun Cell.Piece.isSameColor(cellColor: CellColor): Boolean =
-    color == cellColor
-
 fun Cell.updateCoordinates(new: Cell): Cell =
     when (this) {
         is Cell.Piece.King -> copy(new.row, new.column)
