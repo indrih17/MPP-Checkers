@@ -33,7 +33,7 @@ private fun MoveResult.checkAndSetKing(
     start: Cell.Piece.Man,
     finish: Cell.Empty
 ): MoveResult {
-    val new = start.updateCoordinates(finish) as Cell.Piece.Man
+    val new = start.updateCoordinates(finish)
     return if (board.needToMadeKing(new))
         copy(board = board.setKing(new))
     else

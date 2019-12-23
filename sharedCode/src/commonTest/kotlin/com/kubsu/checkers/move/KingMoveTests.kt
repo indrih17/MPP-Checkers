@@ -14,19 +14,19 @@ class KingMoveTests {
             .update(king)
 
         val leftDiagonal = listOf(
-            Cell.Empty(6, 3),
-            Cell.Empty(5, 2),
-            Cell.Empty(4, 1),
-            Cell.Empty(3, 0)
+            king.updateCoordinates(Cell.Empty(6, 3)),
+            king.updateCoordinates(Cell.Empty(5, 2)),
+            king.updateCoordinates(Cell.Empty(4, 1)),
+            king.updateCoordinates(Cell.Empty(3, 0))
         )
         val rightDiagonal = listOf(
-            Cell.Empty(6, 5),
-            Cell.Empty(5, 6),
-            Cell.Empty(4, 7)
+            king.updateCoordinates(Cell.Empty(6, 5)),
+            king.updateCoordinates(Cell.Empty(5, 6)),
+            king.updateCoordinates(Cell.Empty(4, 7))
         )
         assertEquals(
             leftDiagonal + rightDiagonal,
-            board.getAvailableCellsSequence(king, king).toList().map { it.cell }
+            board.getAvailableCellsSequence(king).toList().map { it.cell }
         )
     }
 
@@ -37,29 +37,29 @@ class KingMoveTests {
             .update(king)
 
         val upLeftDiagonal = listOf(
-            Cell.Empty(3, 2),
-            Cell.Empty(2, 1),
-            Cell.Empty(1, 0)
+            king.updateCoordinates(Cell.Empty(3, 2)),
+            king.updateCoordinates(Cell.Empty(2, 1)),
+            king.updateCoordinates(Cell.Empty(1, 0))
         )
         val upRightDiagonal = listOf(
-            Cell.Empty(3, 4),
-            Cell.Empty(2, 5),
-            Cell.Empty(1, 6),
-            Cell.Empty(0, 7)
+            king.updateCoordinates(Cell.Empty(3, 4)),
+            king.updateCoordinates(Cell.Empty(2, 5)),
+            king.updateCoordinates(Cell.Empty(1, 6)),
+            king.updateCoordinates(Cell.Empty(0, 7))
         )
         val bottomLeftDiagonal = listOf(
-            Cell.Empty(5, 2),
-            Cell.Empty(6, 1),
-            Cell.Empty(7, 0)
+            king.updateCoordinates(Cell.Empty(5, 2)),
+            king.updateCoordinates(Cell.Empty(6, 1)),
+            king.updateCoordinates(Cell.Empty(7, 0))
         )
         val bottomRightDiagonal = listOf(
-            Cell.Empty(5, 4),
-            Cell.Empty(6, 5),
-            Cell.Empty(7, 6)
+            king.updateCoordinates(Cell.Empty(5, 4)),
+            king.updateCoordinates(Cell.Empty(6, 5)),
+            king.updateCoordinates(Cell.Empty(7, 6))
         )
         assertEquals(
             upLeftDiagonal + bottomLeftDiagonal + upRightDiagonal + bottomRightDiagonal,
-            board.getAvailableCellsSequence(king, king).toList().map { it.cell }
+            board.getAvailableCellsSequence(king).toList().map { it.cell }
         )
     }
 
@@ -71,18 +71,18 @@ class KingMoveTests {
             .update(Cell.Piece.Man(6, 3, CellColor.Light))
 
         val leftDiagonal = listOf(
-            Cell.Empty(5, 2),
-            Cell.Empty(4, 1),
-            Cell.Empty(3, 0)
+            king.updateCoordinates(Cell.Empty(5, 2)),
+            king.updateCoordinates(Cell.Empty(4, 1)),
+            king.updateCoordinates(Cell.Empty(3, 0))
         )
         val rightDiagonal = listOf(
-            Cell.Empty(6, 5),
-            Cell.Empty(5, 6),
-            Cell.Empty(4, 7)
+            king.updateCoordinates(Cell.Empty(6, 5)),
+            king.updateCoordinates(Cell.Empty(5, 6)),
+            king.updateCoordinates(Cell.Empty(4, 7))
         )
         assertEquals(
             leftDiagonal + rightDiagonal,
-            board.getAvailableCellsSequence(king, king).toList().map { it.cell }
+            board.getAvailableCellsSequence(king).toList().map { it.cell }
         )
     }
 
@@ -95,13 +95,13 @@ class KingMoveTests {
             .update(Cell.Piece.Man(5, 2, CellColor.Light))
 
         val rightDiagonal = listOf(
-            Cell.Empty(6, 5),
-            Cell.Empty(5, 6),
-            Cell.Empty(4, 7)
+            king.updateCoordinates(Cell.Empty(6, 5)),
+            king.updateCoordinates(Cell.Empty(5, 6)),
+            king.updateCoordinates(Cell.Empty(4, 7))
         )
         assertEquals(
             rightDiagonal,
-            board.getAvailableCellsSequence(king, king).toList().map { it.cell }
+            board.getAvailableCellsSequence(king).toList().map { it.cell }
         )
     }
 
@@ -114,16 +114,16 @@ class KingMoveTests {
             .update(Cell.Piece.Man(4, 1, CellColor.Light))
 
         val leftDiagonal = listOf(
-            Cell.Empty(5, 2)
+            king.updateCoordinates(Cell.Empty(5, 2))
         )
         val rightDiagonal = listOf(
-            Cell.Empty(6, 5),
-            Cell.Empty(5, 6),
-            Cell.Empty(4, 7)
+            king.updateCoordinates(Cell.Empty(6, 5)),
+            king.updateCoordinates(Cell.Empty(5, 6)),
+            king.updateCoordinates(Cell.Empty(4, 7))
         )
         assertEquals(
             leftDiagonal + rightDiagonal,
-            board.getAvailableCellsSequence(king, king).toList().map { it.cell }
+            board.getAvailableCellsSequence(king).toList().map { it.cell }
         )
     }
 
@@ -135,17 +135,17 @@ class KingMoveTests {
             .update(Cell.Piece.Man(4, 1, CellColor.Dark))
 
         val leftDiagonal = listOf(
-            Cell.Empty(6, 3),
-            Cell.Empty(5, 2)
+            king.updateCoordinates(Cell.Empty(6, 3)),
+            king.updateCoordinates(Cell.Empty(5, 2))
         )
         val rightDiagonal = listOf(
-            Cell.Empty(6, 5),
-            Cell.Empty(5, 6),
-            Cell.Empty(4, 7)
+            king.updateCoordinates(Cell.Empty(6, 5)),
+            king.updateCoordinates(Cell.Empty(5, 6)),
+            king.updateCoordinates(Cell.Empty(4, 7))
         )
         assertEquals(
             leftDiagonal + rightDiagonal,
-            board.getAvailableCellsSequence(king, king).toList().map { it.cell }
+            board.getAvailableCellsSequence(king).toList().map { it.cell }
         )
     }
 }

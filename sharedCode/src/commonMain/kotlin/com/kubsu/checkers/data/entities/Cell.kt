@@ -41,10 +41,10 @@ infix fun Cell.Piece.isEnemy(cellColor: CellColor): Boolean =
 infix fun Cell.Piece.isSameColor(cell: Cell.Piece): Boolean =
     color == cell.color
 
-fun Cell.updateCoordinates(new: Cell): Cell =
-    when (this) {
-        is Cell.Piece.King -> copy(new.row, new.column)
-        is Cell.Piece.Man -> copy(new.row, new.column)
-        is Cell.Empty -> copy(new.row, new.column)
+inline fun <reified T : Cell> T.updateCoordinates(new: Cell): T =
+    when (val cell: Cell = this) {
+        is Cell.Piece.King -> cell.copy(new.row, new.column) as T
+        is Cell.Piece.Man -> cell.copy(new.row, new.column) as T
+        is Cell.Empty -> cell.copy(new.row, new.column) as T
     }
 

@@ -6,7 +6,6 @@ import com.kubsu.checkers.data.entities.Cell
 import com.kubsu.checkers.data.entities.filterIsInstance
 import com.kubsu.checkers.data.game.GameState
 import com.kubsu.checkers.data.game.MoveState
-import com.kubsu.checkers.data.minmax.BestMove
 import com.kubsu.checkers.functions.move.human.makeMove
 import com.kubsu.checkers.left
 import kotlinx.collections.immutable.ImmutableList
@@ -19,18 +18,30 @@ suspend fun makeAIMove(gameState: GameState): Either<Failure, MoveState> =
         gameState
             .getBestMoveOrNull()
             ?.let { bestMove ->
+                println(bestMove)
                 makeMove(
-                    moveState = MoveState(gameState, startCell = bestMove.startCell as Cell.Piece),
+                    moveState = MoveState(gameState, startCell = bestMove.startCell),
                     finishCell = bestMove.finishCell
                 )
             }
             ?: Either.left(Failure.NoMoves)
     }
 
+private class BestMove(
+    val startCell: Cell.Piece,
+    val finishCell: Cell.Empty,
+    val eval: Int
+)
+
 private fun GameState.getBestMoveOrNull(): BestMove? =
     getPlayerPieces()
-        .map { board.minimax(startCell = it) }
-        .filter { it.startCell != it.finishCell }
+        .map { board.minimax(current = it) }
+        .mapNotNull {
+            if (it.finishCell != null)
+                BestMove(it.startCell, it.finishCell, it.eval)
+            else
+                null
+        }
         .maxBy(BestMove::eval)
 
 private fun GameState.getPlayerPieces(): ImmutableList<Cell.Piece> =

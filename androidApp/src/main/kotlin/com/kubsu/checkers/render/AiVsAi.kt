@@ -25,6 +25,7 @@ internal suspend fun GameType.AiVsAi.render(
         endGame(gameResult)
     } else {
         tableLayout.render(gameState.board)
+        delay(200)
         makeAIMove(gameState).fold(
             ifLeft = { throw IllegalStateException("Incorrect move: fail - $it, \n$gameState\n") },
             ifRight = {
