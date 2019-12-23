@@ -18,22 +18,19 @@ suspend fun makeAIMove(gameState: GameState): Either<Failure, MoveState> =
         gameState
             .getBestMoveOrNull()
             ?.let { bestMove ->
-                println(bestMove)
-                makeMove(
-                    moveState = MoveState(gameState, startCell = bestMove.startCell),
-                    finishCell = bestMove.finishCell
-                )
+                val moveState = MoveState(gameState, startCell = bestMove.startCell)
+                moveState.makeMove(bestMove.finishCell)
             }
             ?: Either.left(Failure.NoMoves)
     }
 
-private class BestMove(
+data class BestMove(
     val startCell: Cell.Piece,
     val finishCell: Cell.Empty,
     val eval: Int
 )
 
-private fun GameState.getBestMoveOrNull(): BestMove? =
+internal fun GameState.getBestMoveOrNull(): BestMove? =
     getPlayerPieces()
         .map { board.minimax(current = it) }
         .mapNotNull {

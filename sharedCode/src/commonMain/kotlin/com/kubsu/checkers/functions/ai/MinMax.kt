@@ -3,9 +3,9 @@ package com.kubsu.checkers.functions.ai
 import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.minmax.*
 import com.kubsu.checkers.completableFold
+import com.kubsu.checkers.difference
 import com.kubsu.checkers.functions.move.ai.getAllMovesSequence
-import kotlin.math.max
-import kotlin.math.min
+import kotlin.math.*
 
 fun Board.minimax(
     current: Cell.Piece,
@@ -13,25 +13,35 @@ fun Board.minimax(
     data: MinMaxData = MinMaxData(alpha = Int.MIN_VALUE, beta = Int.MAX_VALUE),
     player: MaximizingPlayer = MaximizingPlayer.Self(current.color)
 ): Node =
-    if (depth == 0)
-        node(current, data, player)
-    else
+    if (depth == 0) {
+        createNode(current, depth, player)
+    } else {
+        var minMaxData = data
         getAllMovesSequence(current)
-            .map { (board, cell) -> board.minimax(cell, depth - 1, data, player.enemy()) }
-            .completableFold(initial = null) { acc, new, completeFold ->
-                (acc?.update(new) ?: new.create(current))
-                    .also { if (isNeedStop(it.minMaxData)) completeFold() }
+            .map { (board, cell) ->
+                board.minimax(cell, depth - 1, minMaxData, player.enemy())
             }
-            ?: node(current, data, player)
+            .completableFold(initial = null) { acc, new, completeFold ->
+                println("Depth = $depth, acc = $acc")
+                println("Depth = $depth, new = $new")
+                (acc?.update(new) ?: new.create(current, player))
+                    .also {
+                        minMaxData = player.updateMinMaxData(it.eval, minMaxData)
+                        println("Depth = $depth, minMaxData = $minMaxData\n")
+                        if (isNeedStop(minMaxData)) completeFold()
+                    }
+            }
+            ?: createNode(current, depth, player)
+    }
 
-private fun Board.node(current: Cell.Piece, data: MinMaxData, player: MaximizingPlayer): Node =
-    Node(current, null, player, data, evaluation(current, player))
+private fun Board.createNode(current: Cell.Piece, depth: Int, player: MaximizingPlayer): Node =
+    Node(current, null, player, evaluation(current, depth, player))
 
-private fun Board.evaluation(current: Cell.Piece, player: MaximizingPlayer): Int {
+internal fun Board.evaluation(current: Cell.Piece, depth: Int, player: MaximizingPlayer): Int {
     val manCells = filterIsInstance<Cell.Piece.Man>()
     val kingCells = filterIsInstance<Cell.Piece.King>()
-    val mans = manCells.count(player::isSelf) - manCells.count(player::isEnemy)
-    val kings = kingCells.count(player::isSelf) - kingCells.count(player::isEnemy)
+    val mans = manCells.count(current::isSelf) - manCells.count(current::isEnemy)
+    val kings = kingCells.count(current::isSelf) - kingCells.count(current::isEnemy)
     return mans + 3 * kings - if (isBadMove(current, player)) 2 else 0
 }
 
@@ -39,7 +49,7 @@ private fun Board.isBadMove(cell: Cell.Piece, player: MaximizingPlayer): Boolean
     if (player is MaximizingPlayer.Self)
         increasesSequence
             .mapNotNull { getOrNull(cell, it) }
-            .any { it is Cell.Piece && it.isEnemy(player.color) }
+            .any { it is Cell.Piece && it isEnemy cell }
     else
         false
 
@@ -47,13 +57,16 @@ internal fun Node.update(newElem: Node): Node {
     val newEval = player.minMaxEval(eval, newElem.eval)
     return copy(
         eval = newEval,
-        minMaxData = player.updateMinMaxData(newEval, newElem.minMaxData),
         finishCell = if (newEval != eval) newElem.startCell.toEmpty() else finishCell
     )
 }
 
-internal fun Node.create(cell: Cell.Piece): Node =
-    copy(startCell = cell, finishCell = startCell.toEmpty(), player = player.enemy())
+internal fun Node.create(cell: Cell.Piece, player: MaximizingPlayer): Node =
+    copy(
+        startCell = cell,
+        finishCell = startCell.toEmpty(),
+        player = player
+    )
 
 internal val MaximizingPlayer.defaultEval: Int
     inline get() = if (this is MaximizingPlayer.Self) Int.MIN_VALUE else Int.MAX_VALUE

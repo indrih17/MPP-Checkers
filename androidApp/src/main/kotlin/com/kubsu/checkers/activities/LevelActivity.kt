@@ -15,6 +15,9 @@ class LevelActivity : AppCompatActivity() {
         human_vs_human_button.setOnClickListener {
             startGameActivity(GameType.HumanVsHuman)
         }
+        human_vs_ai_button.setOnClickListener {
+            startGameActivity(GameType.HumanVsAi)
+        }
         ai_vs_ai_button.setOnClickListener {
             startGameActivity(GameType.AiVsAi)
         }

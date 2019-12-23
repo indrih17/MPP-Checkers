@@ -47,6 +47,12 @@ tasks.withType<KotlinCompile> {
     }
 }
 
+tasks.withType<AbstractTestTask> {
+    testLogging {
+        showStandardStreams = true
+    }
+}
+
 // It is necessay because we need to have access to context on CommonCode to use SQLDelight database
 android {
     compileSdkVersion(29)

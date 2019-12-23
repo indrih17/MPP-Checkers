@@ -10,7 +10,7 @@ internal fun Board.getAvailableCellsSequence(current: Cell.Piece.Man): Sequence<
 internal fun Board.getEmptyCellOrNull(current: Cell.Piece.Man, increase: Increase): AIMove? =
     when (val cell = getOrNull(current, increase)) {
         is Cell.Piece -> if (cell isEnemy current)
-            attackOrNull(current, cell, increase)
+            attackAiMoveOrNull(current, cell, increase)
         else
             null
 

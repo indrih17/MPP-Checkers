@@ -6,9 +6,36 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TableLayout
 import android.widget.TableRow
+import com.kubsu.checkers.GameType
 import com.kubsu.checkers.R
+import com.kubsu.checkers.data.Failure
 import com.kubsu.checkers.data.entities.Cell
 import com.kubsu.checkers.data.entities.CellColor
+import com.kubsu.checkers.data.game.GameState
+import com.kubsu.checkers.data.game.MoveState
+import com.kubsu.checkers.functions.GameResult
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
+fun startGame(common: CommonData, gameType: GameType) =
+    when (gameType) {
+        is GameType.HumanVsHuman ->
+            common.updateGame(gameType)
+        is GameType.HumanVsAi ->
+            common.updateGame(gameType, ActivePlayer.Human)
+        is GameType.AiVsAi ->
+            common.updateGame(gameType)
+    }
+
+data class CommonData(
+    val tableLayout: TableLayout,
+    val scope: CoroutineScope,
+    val moveState: MoveState,
+    val updateData: (GameState) -> Unit,
+    val onFail: (Failure.IncorrectMove) -> Unit,
+    val endGame: (GameResult) -> Unit
+)
 
 fun TableLayout.clear() {
     removeAllViews()

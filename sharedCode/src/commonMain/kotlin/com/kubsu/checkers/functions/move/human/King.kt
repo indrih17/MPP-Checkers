@@ -7,6 +7,7 @@ import com.kubsu.checkers.data.game.MoveResult
 import com.kubsu.checkers.data.game.MoveType
 import com.kubsu.checkers.data.game.Score
 import com.kubsu.checkers.data.game.updateFor
+import com.kubsu.checkers.difference
 import com.kubsu.checkers.left
 import com.kubsu.checkers.right
 import kotlinx.collections.immutable.ImmutableList
@@ -21,23 +22,20 @@ internal fun Board.move(
     if (start onDiagonal finish) {
         val intermediateCells = getIntermediateCells(start, finish)
         if (isSimpleMove(intermediateCells)) {
-            Either.right(simpleMove(start, finish, score))
+            simpleMove(start, finish, score).right()
         } else {
             val enemy = intermediateCells.geSingleEnemyOrNull(start)
             if (enemy != null && isAttack(start, enemy))
-                Either.right(attack(start, finish, enemy, score))
+                attack(start, finish, enemy, score).right()
             else
-                Either.left(Failure.IncorrectMove(start, finish))
+                Failure.IncorrectMove(start, finish).left()
         }
     } else {
-        Either.left(Failure.IncorrectMove(start, finish))
+        Failure.IncorrectMove(start, finish).left()
     }
 
 private infix fun Cell.onDiagonal(cell: Cell): Boolean =
     difference(row, cell.row) == difference(column, cell.column)
-
-@Suppress("NOTHING_TO_INLINE")
-private inline fun difference(a: Int, b: Int): Int = abs(a - b)
 
 private fun Board.getIntermediateCells(
     start: Cell,

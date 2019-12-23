@@ -19,7 +19,7 @@ internal fun Board.getAllMovesSequence(startCell: Cell.Piece): Sequence<AIMove> 
 internal fun Cell.takeIfEmptyOrNull(): Cell.Empty? =
     if (this is Cell.Empty) this else null
 
-internal fun Board.attackOrNull(current: Cell.Piece, enemy: Cell.Piece, increase: Increase): AIMove? =
+internal fun Board.attackAiMoveOrNull(current: Cell.Piece, enemy: Cell.Piece, increase: Increase): AIMove? =
     getOrNull(enemy, increase)
         ?.takeIfEmptyOrNull()
         ?.let { aiMove(current = current, killed = enemy, new = it) }

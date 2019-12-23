@@ -1,6 +1,7 @@
 package com.kubsu.checkers.move
 
 import com.kubsu.checkers.data.entities.*
+import com.kubsu.checkers.defaultBoard
 import com.kubsu.checkers.functions.createBoard
 import com.kubsu.checkers.functions.move.ai.getAvailableCellsSequence
 import com.kubsu.checkers.functions.move.ai.isBackMove
@@ -31,7 +32,7 @@ class ManMoveTests {
     }
 
     @Test fun availableCellsHard() {
-        val defaultBoard = createBoard(8).map { if (it is Cell.Piece) it.toEmpty() else it }
+        val defaultBoard = defaultBoard(8)
 
         val current52 = Cell.Piece.Man(5, 2, CellColor.Light)
         val board1 = defaultBoard

@@ -32,6 +32,9 @@ fun Cell.Piece.Man.toKing() =
 fun Cell.Piece.toEmpty() =
     Cell.Empty(row, column)
 
+infix fun Cell.Piece.isSelf(cell: Cell.Piece): Boolean =
+    !isEnemy(cell)
+
 infix fun Cell.Piece.isEnemy(cell: Cell.Piece): Boolean =
     color != cell.color
 

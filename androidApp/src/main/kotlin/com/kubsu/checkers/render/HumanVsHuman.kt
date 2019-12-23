@@ -3,49 +3,40 @@ package com.kubsu.checkers.render
 import android.graphics.Color
 import android.widget.TableLayout
 import com.kubsu.checkers.GameType
-import com.kubsu.checkers.data.Failure
 import com.kubsu.checkers.data.entities.*
-import com.kubsu.checkers.data.game.GameState
 import com.kubsu.checkers.data.game.MoveState
 import com.kubsu.checkers.fold
-import com.kubsu.checkers.functions.GameResult
 import com.kubsu.checkers.functions.gameResultOrNull
 import com.kubsu.checkers.functions.move.human.makeMove
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-internal suspend fun GameType.HumanVsHuman.render(
-    tableLayout: TableLayout,
-    mainScope: CoroutineScope,
-    moveResult: MoveState,
-    updateData: (GameState) -> Unit,
-    onFail: (Failure.IncorrectMove) -> Unit,
-    endGame: (GameResult) -> Unit
-) {
+internal fun CommonData.updateGame(gameType: GameType.HumanVsHuman) {
     tableLayout.clear()
-    updateData(moveResult.gameState)
-    val gameResult = moveResult.gameState.gameResultOrNull()
+    updateData(moveState.gameState)
+    val gameResult = moveState.gameState.gameResultOrNull()
     if (gameResult != null)
         endGame(gameResult)
     else
         tableLayout.render(
-            moveResult = moveResult,
-            mainScope = mainScope,
+            moveResult = moveState,
+            scope = scope,
             onClick = { clickedCell ->
-                makeMove(moveResult, clickedCell).fold(
+                moveState.makeMove(clickedCell).fold(
                     ifLeft = onFail,
                     ifRight = {
-                        render(tableLayout, mainScope, it, updateData, onFail, endGame)
+                        copy(moveState = it).updateGame(gameType)
                     }
                 )
             }
         )
 }
 
-private inline fun TableLayout.render(
+private fun TableLayout.render(
+    scope: CoroutineScope,
     moveResult: MoveState,
-    mainScope: CoroutineScope,
-    crossinline onClick: suspend (Cell) -> Unit
+    onClick: suspend (Cell) -> Unit
 ) {
     val board = moveResult.gameState.board
     for (row in board.rows) {
@@ -55,7 +46,9 @@ private inline fun TableLayout.render(
             val current = board.get(row, column)
             val imageView = context.cellImageView(current)
             if (current != null) {
-                imageView.setOnClickListener { mainScope.launch { onClick(current) } }
+                imageView.setOnClickListener {
+                    scope.launch(Dispatchers.Main) { onClick(current) }
+                }
                 if (current == moveResult.startCell)
                     imageView.setBackgroundColor(Color.GREEN)
             }

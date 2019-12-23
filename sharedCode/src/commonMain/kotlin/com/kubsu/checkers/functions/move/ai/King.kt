@@ -12,7 +12,7 @@ private fun Board.getEmptyCells(current: Cell.Piece.King, increase: Increase, en
     when (val cell = getOrNull(current, increase)) {
         is Cell.Piece ->
             if (enemyCount == 0 && cell isEnemy current)
-                attackOrNull(current, cell, increase)
+                attackAiMoveOrNull(current, cell, increase)
                     ?.let { listOf(it) + getEmptyCells(it.cell as Cell.Piece.King, increase, enemyCount + 1) }
                     ?: emptyList()
             else

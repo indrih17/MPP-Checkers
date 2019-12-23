@@ -3,14 +3,14 @@ package com.kubsu.checkers.activities
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.kubsu.checkers.GameType
 import com.kubsu.checkers.R
 import com.kubsu.checkers.data.Failure
 import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.game.GameState
 import com.kubsu.checkers.data.game.MoveState
 import com.kubsu.checkers.functions.*
-import com.kubsu.checkers.render.render
+import com.kubsu.checkers.render.CommonData
+import com.kubsu.checkers.render.startGame
 import com.kubsu.checkers.toast
 import kotlinx.android.synthetic.main.activity_game.*
 import kotlinx.coroutines.*
@@ -22,20 +22,20 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
-        val moveState = MoveState(
-            gameState = GameState(boardSize = 8, playerColor = CellColor.Light),
-            startCell = null
+        startGame(
+            common = CommonData(
+                tableLayout = board_table_layout,
+                moveState = MoveState(
+                    gameState = GameState(boardSize = 8, playerColor = CellColor.Light),
+                    startCell = null
+                ),
+                scope = mainScope,
+                updateData = ::updateData,
+                onFail = ::incorrectMove,
+                endGame = ::endGame
+            ),
+            gameType = intent.getParcelableExtra(gameTypeArg)!!
         )
-
-        mainScope.launch {
-            when (val gameType = intent.getParcelableExtra<GameType>(gameTypeArg)) {
-                is GameType.HumanVsHuman ->
-                    gameType.render(board_table_layout, mainScope, moveState, ::updateData, ::incorrectMove, ::endGame)
-
-                is GameType.AiVsAi ->
-                    gameType.render(board_table_layout, moveState, ::updateData, ::endGame)
-            }
-        }
     }
 
     override fun onDestroy() {

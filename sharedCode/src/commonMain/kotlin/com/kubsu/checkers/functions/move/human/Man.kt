@@ -18,13 +18,13 @@ internal fun Board.move(
     score: Score
 ): Either<Failure.IncorrectMove, MoveResult> {
     val either = if (isSimpleMove(start, finish)) {
-        Either.right(simpleMove(start, finish, score))
+        simpleMove(start, finish, score).right()
     } else {
         val middleCell = middle(start, finish)
         if (middleCell is Cell.Piece && isAttack(start, finish, middleCell))
-            Either.right(attack(start, finish, middleCell, score))
+            attack(start, finish, middleCell, score).right()
         else
-            Either.left(Failure.IncorrectMove(start, finish))
+            Failure.IncorrectMove(start, finish).left()
     }
     return either.map { it.checkAndSetKing(start, finish) }
 }
