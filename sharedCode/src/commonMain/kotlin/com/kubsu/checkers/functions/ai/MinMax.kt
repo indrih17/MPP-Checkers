@@ -25,10 +25,12 @@ private fun Board.minimax(depth: Int, player: MaximizingPlayer, data: MinMaxData
         getAllMovesSequence(player)
             .map { board -> board.minimax(depth - 1, player.enemy(), minMaxData) }
             .completableFold(initial = null) { old, new, complete ->
-                player.bestEval(old ?: new, new).also { best ->
-                    minMaxData = player.updateMinMaxData(best, minMaxData)
-                    if (isNeedStop(minMaxData)) complete()
-                }
+                player
+                    .bestEval(old ?: new, new)
+                    .also { best ->
+                        minMaxData = player.updateMinMaxData(best, minMaxData)
+                        if (isNeedStop(minMaxData)) complete()
+                    }
             }
             ?: player.defaultEval
     }

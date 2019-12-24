@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.util.*
 
 plugins {
     id("com.android.application")
@@ -17,11 +18,27 @@ android {
         minSdkVersion(21)
         targetSdkVersion(29)
 
-        versionName = "0.1.0"
-        versionCode = 1
+        versionName = "0.1.2"
+        versionCode = 3
 
         base.archivesBaseName = "${applicationName}_$versionName"
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    val local = Properties()
+    rootProject.file("local.properties").also { localProperties ->
+        if (localProperties.exists()) {
+            localProperties.inputStream().use { local.load(it) }
+        }
+    }
+
+    signingConfigs {
+        create("release") {
+            storeFile = file("release-key.jks")
+            storePassword = local.getProperty("storePassword")
+            keyAlias = local.getProperty("keyAlias")
+            keyPassword = local.getProperty("keyPassword")
+        }
     }
 
     buildTypes {
@@ -34,11 +51,12 @@ android {
         }
 
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 
