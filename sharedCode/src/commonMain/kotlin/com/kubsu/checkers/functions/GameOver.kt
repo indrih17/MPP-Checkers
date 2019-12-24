@@ -6,10 +6,7 @@ import com.kubsu.checkers.data.entities.filterIsInstance
 import com.kubsu.checkers.data.game.GameState
 
 private const val pieceSize = 12
-private const val numberOfPiecesForDraw = 3
-
-fun GameState.isGameOver(): Boolean =
-    gameResultOrNull() != null
+private const val numberOfPiecesForDraw = 4
 
 enum class GameResult {
     LightWon,
@@ -27,8 +24,8 @@ fun GameState.gameResultOrNull(): GameResult? =
         val lightPieces = pieces.count { it.color == CellColor.Light }
         val darkPieces = pieces.count { it.color == CellColor.Dark }
         if (
-            (lightPieces <= numberOfPiecesForDraw || darkPieces <= numberOfPiecesForDraw)
-            && movesWithoutAttacks == 15
+            (lightPieces <= numberOfPiecesForDraw && darkPieces <= numberOfPiecesForDraw)
+            && simpleMoves >= 15
         )
             GameResult.Draw
         else

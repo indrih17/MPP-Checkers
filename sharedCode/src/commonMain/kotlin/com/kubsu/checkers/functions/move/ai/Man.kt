@@ -2,12 +2,11 @@ package com.kubsu.checkers.functions.move.ai
 
 import com.kubsu.checkers.data.entities.*
 
-internal fun Board.getAvailableCellsSequence(current: Cell.Piece.Man): Sequence<AIMove> =
+internal fun Board.getAvailableCellsSequence(current: Cell.Piece.Man): Sequence<Board> =
     increasesSequence
-        .map { increase -> getEmptyCellOrNull(current, increase) }
-        .filterNotNull()
+        .mapNotNull { increase -> getAvailableCells(current, increase)?.board }
 
-internal fun Board.getEmptyCellOrNull(current: Cell.Piece.Man, increase: Increase): AIMove? =
+internal fun Board.getAvailableCells(current: Cell.Piece.Man, increase: Increase): AIMove? =
     when (val cell = getOrNull(current, increase)) {
         is Cell.Piece -> if (cell isEnemy current)
             attackAiMoveOrNull(current, cell, increase)

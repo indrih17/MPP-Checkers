@@ -1,13 +1,38 @@
 package com.kubsu.checkers.move
 
 import com.kubsu.checkers.data.entities.*
-import com.kubsu.checkers.functions.createBoard
+import com.kubsu.checkers.defaultBoard
 import com.kubsu.checkers.functions.move.ai.getAvailableCellsSequence
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class KingMoveTests {
-    @Test fun availableCellsSimple1() {
+    private val defaultBoard = defaultBoard(8)
+    private val color = CellColor.Light
+
+    @Test fun aiMoveKingTest() {
+        val king = Cell.Piece.King(7, 2, color)
+        val board = defaultBoard
+            .update(king)
+            .update(Cell.Piece.Man(6, 3, color.enemy()))
+        assertEquals(
+            listOf(
+                defaultBoard
+                    .update(Cell.Piece.King(6, 1, color))
+                    .update(Cell.Piece.Man(6, 3, color.enemy())),
+                defaultBoard
+                    .update(Cell.Piece.King(5, 0, color))
+                    .update(Cell.Piece.Man(6, 3, color.enemy())),
+                defaultBoard.update(Cell.Piece.King(5, 4, color)),
+                defaultBoard.update(Cell.Piece.King(4, 5, color)),
+                defaultBoard.update(Cell.Piece.King(3, 6, color)),
+                defaultBoard.update(Cell.Piece.King(2, 7, color))
+            ),
+            board.getAvailableCellsSequence(king).toList()
+        )
+    }
+
+    /*@Test fun availableCellsSimple1() {
         val king = Cell.Piece.King(7, 4, CellColor.Dark)
         val board = createBoard(8)
             .map { if (it is Cell.Piece) it.toEmpty() else it }
@@ -147,5 +172,5 @@ class KingMoveTests {
             leftDiagonal + rightDiagonal,
             board.getAvailableCellsSequence(king).toList().map { it.cell }
         )
-    }
+    }*/
 }

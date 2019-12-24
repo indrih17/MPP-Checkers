@@ -24,6 +24,12 @@ sealed class Cell(open val row: Row, open val column: Column) {
     }
 
     data class Empty(override val row: Row, override val column: Column) : Cell(row, column)
+
+    override fun toString(): String = when (this) {
+        is Piece.Man -> if (color is CellColor.Light) "w" else "b"
+        is Piece.King -> if (color is CellColor.Light) "W" else "b"
+        is Empty -> " "
+    }
 }
 
 fun Cell.Piece.Man.toKing() =

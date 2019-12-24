@@ -4,7 +4,6 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("android.extensions")
-    //id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
@@ -18,8 +17,8 @@ android {
         minSdkVersion(21)
         targetSdkVersion(29)
 
-        versionName = "0.5.0-rc02"
-        versionCode = 27
+        versionName = "0.1.0"
+        versionCode = 1
 
         base.archivesBaseName = "${applicationName}_$versionName"
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
@@ -72,7 +71,5 @@ tasks.withType<KotlinCompile> {
 dependencies {
     implementation(project(":sharedCode"))
     implementation(fileTree("include" to "*.jar", "dir" to "libs"))
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.3.61")
     implementation("androidx.appcompat:appcompat:1.1.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.0.0-beta3")
 }

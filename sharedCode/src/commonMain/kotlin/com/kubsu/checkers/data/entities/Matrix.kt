@@ -6,7 +6,10 @@ import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toPersistentList
 
-inline class Matrix<T>(val value: PersistentList<PersistentList<T>>)
+inline class Matrix<T>(val value: PersistentList<PersistentList<T>>) {
+    override fun toString(): String =
+        "\n${value.joinToString("\n") { list -> list.joinToString(separator = " ") }}\n"
+}
 
 val Matrix<*>.size: Int
     inline get() = value.size

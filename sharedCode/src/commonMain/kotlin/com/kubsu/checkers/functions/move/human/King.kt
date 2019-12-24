@@ -3,8 +3,7 @@ package com.kubsu.checkers.functions.move.human
 import com.kubsu.checkers.Either
 import com.kubsu.checkers.data.Failure
 import com.kubsu.checkers.data.entities.*
-import com.kubsu.checkers.data.game.MoveResult
-import com.kubsu.checkers.data.game.MoveType
+import com.kubsu.checkers.data.game.GameState
 import com.kubsu.checkers.data.game.Score
 import com.kubsu.checkers.data.game.updateFor
 import com.kubsu.checkers.difference
@@ -12,17 +11,17 @@ import com.kubsu.checkers.left
 import com.kubsu.checkers.right
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import kotlin.math.abs
 
 internal fun Board.move(
     start: Cell.Piece.King,
     finish: Cell.Empty,
-    score: Score
-): Either<Failure.IncorrectMove, MoveResult> =
+    score: Score,
+    simpleMoves: Int
+): Either<Failure.IncorrectMove, GameState> =
     if (start onDiagonal finish) {
         val intermediateCells = getIntermediateCells(start, finish)
         if (isSimpleMove(intermediateCells)) {
-            simpleMove(start, finish, score).right()
+            simpleMove(start, finish, score, simpleMoves).right()
         } else {
             val enemy = intermediateCells.geSingleEnemyOrNull(start)
             if (enemy != null && isAttack(start, enemy))
@@ -87,9 +86,9 @@ private fun Board.attack(
     enemy: Cell.Piece,
     score: Score
 ) =
-    MoveResult(
+    GameState(
         board = swap(start, finish).update(enemy.toEmpty()),
         score = score updateFor start,
-        nextMove = start.color.enemy(),
-        moveType = MoveType.Attack
+        activePlayerColor = start.color.enemy(),
+        simpleMoves = 0
     )

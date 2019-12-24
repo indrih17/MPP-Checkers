@@ -6,36 +6,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TableLayout
 import android.widget.TableRow
-import com.kubsu.checkers.GameType
 import com.kubsu.checkers.R
-import com.kubsu.checkers.data.Failure
-import com.kubsu.checkers.data.entities.Cell
-import com.kubsu.checkers.data.entities.CellColor
-import com.kubsu.checkers.data.game.GameState
-import com.kubsu.checkers.data.game.MoveState
-import com.kubsu.checkers.functions.GameResult
+import com.kubsu.checkers.data.entities.*
+import com.kubsu.checkers.data.game.UserGameState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
-fun startGame(common: CommonData, gameType: GameType) =
-    when (gameType) {
-        is GameType.HumanVsHuman ->
-            common.updateGame(gameType)
-        is GameType.HumanVsAi ->
-            common.updateGame(gameType, ActivePlayer.Human)
-        is GameType.AiVsAi ->
-            common.updateGame(gameType)
-    }
-
-data class CommonData(
-    val tableLayout: TableLayout,
-    val scope: CoroutineScope,
-    val moveState: MoveState,
-    val updateData: (GameState) -> Unit,
-    val onFail: (Failure.IncorrectMove) -> Unit,
-    val endGame: (GameResult) -> Unit
-)
 
 fun TableLayout.clear() {
     removeAllViews()
@@ -67,3 +43,35 @@ private val Cell.Piece.Man.res: Int
 
 private val Cell.Piece.King.res: Int
     get() = if (color is CellColor.Light) R.drawable.white_king else R.drawable.black_king
+
+fun CommonData.render(tableLayout: TableLayout, onClick: suspend (Cell) -> Unit) {
+    val board = userGameState.gameState.board
+    for (row in board.rows) {
+        val tableRow = tableLayout.context.tableRow()
+
+        for (column in board.columns) {
+            val cell = board.get(row, column)
+            val imageView = tableLayout.context.cellImageView(cell)
+            tableRow.addView(imageView, column)
+
+            if (cell != null)
+                imageView.addClickListener(scope, userGameState, cell, onClick)
+        }
+        tableLayout.addView(tableRow, row)
+    }
+}
+
+private fun ImageView.addClickListener(
+    scope: CoroutineScope,
+    userGameState: UserGameState,
+    current: Cell,
+    onClick: suspend (Cell) -> Unit
+) {
+    setOnClickListener {
+        scope.launch(Dispatchers.Main) {
+            onClick(current)
+        }
+    }
+    if (current == userGameState.startCell)
+        setBackgroundColor(Color.GREEN)
+}

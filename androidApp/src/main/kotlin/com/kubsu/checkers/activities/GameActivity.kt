@@ -7,7 +7,7 @@ import com.kubsu.checkers.R
 import com.kubsu.checkers.data.Failure
 import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.game.GameState
-import com.kubsu.checkers.data.game.MoveState
+import com.kubsu.checkers.data.game.UserGameState
 import com.kubsu.checkers.functions.*
 import com.kubsu.checkers.render.CommonData
 import com.kubsu.checkers.render.startGame
@@ -25,13 +25,13 @@ class GameActivity : AppCompatActivity() {
         startGame(
             common = CommonData(
                 tableLayout = board_table_layout,
-                moveState = MoveState(
+                userGameState = UserGameState(
                     gameState = GameState(boardSize = 8, playerColor = CellColor.Light),
                     startCell = null
                 ),
                 scope = mainScope,
                 updateData = ::updateData,
-                onFail = ::incorrectMove,
+                onFail = ::onFailure,
                 endGame = ::endGame
             ),
             gameType = intent.getParcelableExtra(gameTypeArg)!!
@@ -46,7 +46,13 @@ class GameActivity : AppCompatActivity() {
     override fun onBackPressed() =
         finish()
 
-    private fun incorrectMove(failure: Failure.IncorrectMove) = toast("Некорректный ход")
+    private fun onFailure(failure: Failure) =
+        toast(
+            when (failure) {
+                is Failure.IncorrectMove -> "Некорректный ход"
+                is Failure.NoMoves -> "Отстутствуют ходы!"
+            }
+        )
 
     @SuppressLint("SetTextI18n")
     private fun updateData(state: GameState) {
@@ -57,7 +63,6 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    // Показать результат игры
     private fun endGame(result: GameResult) {
         message_text_view.text = when (result) {
             GameResult.LightWon -> "Победа за Белыми! Поздравляем!"

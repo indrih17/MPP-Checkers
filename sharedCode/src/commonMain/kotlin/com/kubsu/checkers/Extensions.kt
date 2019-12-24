@@ -9,15 +9,15 @@ inline fun <reified T> persistentList(size: Int, getValue: (Int) -> T): Persiste
 
 inline fun <T : Any> Sequence<T>.completableFold(
     initial: T?,
-    operation: (acc: T?, T, completeFold: () -> Unit) -> T
+    operation: (old: T?, new: T, complete: () -> Unit) -> T
 ): T? {
-    var accumulator = initial
+    var old = initial
     var stop = false
     for (element in this) {
-        accumulator = operation(accumulator, element) { stop = true }
-        if (stop) return accumulator
+        old = operation(old, element) { stop = true }
+        if (stop) return old
     }
-    return accumulator
+    return old
 }
 
 @Suppress("NOTHING_TO_INLINE")

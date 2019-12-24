@@ -1,5 +1,6 @@
 package com.kubsu.checkers.data.minmax
 
+import com.kubsu.checkers.data.entities.Cell
 import com.kubsu.checkers.data.entities.CellColor
 import com.kubsu.checkers.data.entities.enemy
 
@@ -13,3 +14,10 @@ fun MaximizingPlayer.enemy(): MaximizingPlayer =
         MaximizingPlayer.Self(color.enemy())
     else
         MaximizingPlayer.Enemy(color.enemy())
+
+
+fun MaximizingPlayer.isSameColor(cell: Cell.Piece): Boolean =
+    color == cell.color
+
+fun MaximizingPlayer.isEnemyColor(cell: Cell.Piece): Boolean =
+    color != cell.color

@@ -3,70 +3,73 @@ package com.kubsu.checkers.minimax
 import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.game.GameState
 import com.kubsu.checkers.data.game.Score
+import com.kubsu.checkers.data.minmax.Node
 import com.kubsu.checkers.defaultBoard
-import com.kubsu.checkers.functions.ai.BestMove
 import com.kubsu.checkers.functions.ai.getBestMoveOrNull
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class MinMaxTests {
+    private val defaultBoard = defaultBoard(8)
+    private val color = CellColor.Light
+
     @Test fun manVsMansTest1() {
-        val defaultBoard = defaultBoard(8)
-        val current = Cell.Piece.Man(7, 2, CellColor.Light)
-        val enemy1 = Cell.Piece.Man(5, 0, CellColor.Dark)
-        val enemy2 = Cell.Piece.Man(5, 4, CellColor.Dark)
         val gameState = GameState(
-            board = defaultBoard.update(current).update(enemy1).update(enemy2),
+            board = defaultBoard
+                .update(Cell.Piece.Man(7, 2, color))
+                .update(Cell.Piece.Man(5, 0, color.enemy()))
+                .update(Cell.Piece.Man(5, 4, color.enemy())),
             score = Score(0,0),
             activePlayerColor = CellColor.Light,
-            movesWithoutAttacks = 0
+            simpleMoves = 0
         )
         assertEquals(
-            BestMove(
-                startCell = current,
-                finishCell = Cell.Empty(6, 1),
-                eval = -1
+            Node(
+                board = defaultBoard
+                    .update(Cell.Piece.Man(6, 1, color))
+                    .update(Cell.Piece.Man(5, 0, color.enemy()))
+                    .update(Cell.Piece.Man(5, 4, color.enemy())),
+                eval = -2147483648
             ),
             gameState.getBestMoveOrNull()
         )
     }
 
     @Test fun manVsMansTest2() {
-        val defaultBoard = defaultBoard(8)
-        val current = Cell.Piece.Man(6, 3, CellColor.Light)
-        val enemy1 = Cell.Piece.Man(4, 1, CellColor.Dark)
-        val enemy2 = Cell.Piece.Man(3, 6, CellColor.Dark)
         val gameState = GameState(
-            board = defaultBoard.update(current).update(enemy1).update(enemy2),
+            board = defaultBoard
+                .update(Cell.Piece.Man(6, 3, color))
+                .update(Cell.Piece.Man(4, 1, color.enemy()))
+                .update(Cell.Piece.Man(3, 6, color.enemy())),
             score = Score(0,0),
             activePlayerColor = CellColor.Light,
-            movesWithoutAttacks = 0
+            simpleMoves = 0
         )
         assertEquals(
-            BestMove(
-                startCell = current,
-                finishCell = Cell.Empty(5, 4),
-                eval = 1
+            Node(
+                board = defaultBoard
+                    .update(Cell.Piece.Man(5, 4, color))
+                    .update(Cell.Piece.Man(4, 1, color.enemy()))
+                    .update(Cell.Piece.Man(3, 6, color.enemy())),
+                eval = -4
             ),
             gameState.getBestMoveOrNull()
         )
     }
 
     @Test fun kingVsManTest1() {
-        val defaultBoard = defaultBoard(8)
-        val current = Cell.Piece.King(7, 2, CellColor.Light)
-        val enemy = Cell.Piece.Man(5, 4, CellColor.Dark)
         val gameState = GameState(
-            board = defaultBoard.update(current).update(enemy),
+            board = defaultBoard
+                .update(Cell.Piece.King(7, 2, color))
+                .update(Cell.Piece.Man(5, 4, color.enemy())),
             score = Score(0,0),
             activePlayerColor = CellColor.Light,
-            movesWithoutAttacks = 0
+            simpleMoves = 0
         )
         assertEquals(
-            BestMove(
-                startCell = current,
-                finishCell = Cell.Empty(4, 5),
-                eval = 9
+            Node(
+                defaultBoard.update(Cell.Piece.King(4, 5, color)),
+                eval = 2147483647
             ),
             gameState.getBestMoveOrNull()
         )

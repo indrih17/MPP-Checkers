@@ -6,7 +6,7 @@ import com.kubsu.checkers.data.minmax.MinMaxData
 import com.kubsu.checkers.functions.ai.defaultEval
 import com.kubsu.checkers.functions.ai.isNeedStop
 import com.kubsu.checkers.functions.ai.updateMinMaxData
-import com.kubsu.checkers.functions.ai.minMaxEval
+import com.kubsu.checkers.functions.ai.bestEval
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -17,11 +17,11 @@ class MinMaxDataTests {
         val eval1 = 10; val eval2 = -10
         assertEquals(
             eval1,
-            MaximizingPlayer.Self(CellColor.Light).minMaxEval(eval1, eval2)
+            MaximizingPlayer.Self(CellColor.Light).bestEval(eval1, eval2)
         )
         assertEquals(
             eval2,
-            MaximizingPlayer.Enemy(CellColor.Light).minMaxEval(eval1, eval2)
+            MaximizingPlayer.Enemy(CellColor.Light).bestEval(eval1, eval2)
         )
     }
 
