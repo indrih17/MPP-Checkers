@@ -71,7 +71,7 @@ private fun CommonData.makeMove(
     activePlayer: ActivePlayer.Ai
 ) {
     val gameState = userGameState.gameState
-    render(tableLayout, onClick = {})
+    render(tableLayout)
     scope.launch(Dispatchers.Main) {
         makeAIMove(gameState).fold(
             ifLeft = onFail,

@@ -26,7 +26,7 @@ class GameActivity : AppCompatActivity() {
             common = CommonData(
                 tableLayout = board_table_layout,
                 userGameState = UserGameState(
-                    gameState = GameState(boardSize = 8, playerColor = CellColor.Light),
+                    gameState = GameState(playerColor = CellColor.Light),
                     startCell = null
                 ),
                 scope = mainScope,

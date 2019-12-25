@@ -48,7 +48,7 @@ internal fun Board.evaluation(player: MaximizingPlayer): Int {
 internal fun Board.isBadMove(current: Cell.Piece): Boolean =
     increasesSequence.any { increase ->
         val cell = getOrNull(current, increase)
-        cell is Cell.Piece && cell isEnemy current
+        cell is Cell.Piece && cell isEnemy current && getOrNull(cell, increase) is Cell.Piece
     }
 
 internal val MaximizingPlayer.defaultEval: Int

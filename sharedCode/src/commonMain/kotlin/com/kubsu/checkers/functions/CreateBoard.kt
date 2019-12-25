@@ -2,8 +2,8 @@ package com.kubsu.checkers.functions
 
 import com.kubsu.checkers.data.entities.*
 
-fun createBoard(size: Int): Board =
-    matrix(size) { row, column ->
+fun createBoard(): Board =
+    matrix(size = 8) { row, column ->
         if (isAccessible(row, column))
             when (row) {
                 in darkRows -> Cell.Piece.Man(row, column, CellColor.Dark)

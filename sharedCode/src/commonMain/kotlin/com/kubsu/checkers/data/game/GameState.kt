@@ -10,8 +10,8 @@ data class GameState(
     val activePlayerColor: CellColor,
     val simpleMoves: Int
 ) {
-    constructor(boardSize: Int, playerColor: CellColor) : this(
-        board = createBoard(boardSize),
+    constructor(playerColor: CellColor) : this(
+        board = createBoard(),
         score = Score(0, 0),
         activePlayerColor = playerColor,
         simpleMoves = 0

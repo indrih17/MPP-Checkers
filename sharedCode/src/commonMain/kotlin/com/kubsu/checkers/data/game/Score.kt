@@ -1,9 +1,6 @@
 package com.kubsu.checkers.data.game
 
-import com.kubsu.checkers.data.entities.Board
-import com.kubsu.checkers.data.entities.Cell
-import com.kubsu.checkers.data.entities.CellColor
-import com.kubsu.checkers.data.entities.filterIsInstance
+import com.kubsu.checkers.data.entities.*
 
 data class Score(
     val light: Int,
@@ -13,8 +10,8 @@ data class Score(
 fun Board.getScore(): Score {
     val pieces = filterIsInstance<Cell.Piece>()
     return Score(
-        light = 12 - pieces.count { it.color is CellColor.Dark },
-        dark = 12 - pieces.count { it.color is CellColor.Light }
+        light = piecesAmount - pieces.count { it.color is CellColor.Dark },
+        dark = piecesAmount - pieces.count { it.color is CellColor.Light }
     )
 }
 

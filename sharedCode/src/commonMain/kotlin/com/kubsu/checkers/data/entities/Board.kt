@@ -2,6 +2,9 @@ package com.kubsu.checkers.data.entities
 
 typealias Board = Matrix<Cell?>
 
+val Board.piecesAmount: Int
+    inline get() = 12
+
 fun Board.update(cell: Cell): Board =
     set(cell.row, cell.column, cell)
 

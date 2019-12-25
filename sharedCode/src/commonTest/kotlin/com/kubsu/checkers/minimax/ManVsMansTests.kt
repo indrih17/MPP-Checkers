@@ -13,7 +13,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class ManVsMansTests {
-    private val defaultBoard = defaultBoard(8)
+    private val defaultBoard = defaultBoard()
     private val color = CellColor.Light
 
     @Test

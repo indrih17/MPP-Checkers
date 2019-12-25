@@ -7,7 +7,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class ManMoveTests {
-    private val defaultBoard = defaultBoard(8)
+    private val defaultBoard = defaultBoard()
     private val color = CellColor.Light
 
     @Test fun aiMoveManTest() {
@@ -49,7 +49,7 @@ class ManMoveTests {
      }
 
      @Test fun availableCellsHard() {
-         val defaultBoard = defaultBoard(8)
+         val defaultBoard = defaultBoard()
 
          val current52 = Cell.Piece.Man(5, 2, CellColor.Light)
          val board1 = defaultBoard

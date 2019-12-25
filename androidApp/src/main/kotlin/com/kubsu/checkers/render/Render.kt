@@ -44,7 +44,7 @@ private val Cell.Piece.Man.res: Int
 private val Cell.Piece.King.res: Int
     get() = if (color is CellColor.Light) R.drawable.white_king else R.drawable.black_king
 
-fun CommonData.render(tableLayout: TableLayout, onClick: suspend (Cell) -> Unit) {
+fun CommonData.render(tableLayout: TableLayout, onClick: (suspend (Cell) -> Unit)? = null) {
     val board = userGameState.gameState.board
     for (row in board.rows) {
         val tableRow = tableLayout.context.tableRow()
@@ -54,7 +54,7 @@ fun CommonData.render(tableLayout: TableLayout, onClick: suspend (Cell) -> Unit)
             val imageView = tableLayout.context.cellImageView(cell)
             tableRow.addView(imageView, column)
 
-            if (cell != null)
+            if (cell != null && onClick != null)
                 imageView.addClickListener(scope, userGameState, cell, onClick)
         }
         tableLayout.addView(tableRow, row)

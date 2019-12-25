@@ -9,7 +9,6 @@ import com.kubsu.checkers.render.clear
 import com.kubsu.checkers.render.render
 import com.kubsu.checkers.render.updateCommonData
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 internal fun CommonData.updateGame(gameType: GameType.AiVsAi) {
@@ -20,9 +19,8 @@ internal fun CommonData.updateGame(gameType: GameType.AiVsAi) {
     if (gameResult != null) {
         endGame(gameResult)
     } else {
-        render(tableLayout, onClick = {})
+        render(tableLayout)
         scope.launch(Dispatchers.Main) {
-            delay(200)
             makeAIMove(gameState).fold(
                 ifLeft = onFail,
                 ifRight = {

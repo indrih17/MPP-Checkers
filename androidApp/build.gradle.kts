@@ -18,26 +18,25 @@ android {
         minSdkVersion(21)
         targetSdkVersion(29)
 
-        versionName = "0.1.2"
-        versionCode = 3
+        versionName = "0.1.4"
+        versionCode = 5
 
         base.archivesBaseName = "${applicationName}_$versionName"
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
     }
 
-    val local = Properties()
-    rootProject.file("local.properties").also { localProperties ->
-        if (localProperties.exists()) {
-            localProperties.inputStream().use { local.load(it) }
-        }
-    }
+    val localProps = Properties()
+    rootProject
+        .file("local.properties")
+        .takeIf { it.exists() }
+        ?.also { it.inputStream().use(localProps::load) }
 
     signingConfigs {
         create("release") {
             storeFile = file("release-key.jks")
-            storePassword = local.getProperty("storePassword")
-            keyAlias = local.getProperty("keyAlias")
-            keyPassword = local.getProperty("keyPassword")
+            storePassword = localProps.getProperty("storePassword")
+            keyAlias = localProps.getProperty("keyAlias")
+            keyPassword = localProps.getProperty("keyPassword")
         }
     }
 
