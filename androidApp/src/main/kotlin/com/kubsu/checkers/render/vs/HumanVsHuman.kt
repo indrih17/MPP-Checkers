@@ -1,29 +1,29 @@
 package com.kubsu.checkers.render.vs
 
 import com.kubsu.checkers.GameType
+import com.kubsu.checkers.def
 import com.kubsu.checkers.fold
 import com.kubsu.checkers.functions.gameResultOrNull
 import com.kubsu.checkers.functions.move.human.makeMove
-import com.kubsu.checkers.render.CommonData
+import com.kubsu.checkers.render.UiState
 import com.kubsu.checkers.render.clear
 import com.kubsu.checkers.render.render
 
-internal fun CommonData.updateGame(gameType: GameType.HumanVsHuman) {
+internal fun UiState.updateGame(gameType: GameType.HumanVsHuman) {
     tableLayout.clear()
-    updateData(userGameState.gameState)
-    val gameResult = userGameState.gameState.gameResultOrNull()
-    if (gameResult != null)
+    updateData(userState.gameState)
+    val gameResult = userState.gameState.gameResultOrNull()
+    if (gameResult != null) {
         endGame(gameResult)
-    else
+    } else {
         render(
             tableLayout = tableLayout,
             onClick = { clickedCell ->
-                userGameState.makeMove(clickedCell).fold(
+                def { userState.makeMove(clickedCell) }.fold(
                     ifLeft = onFail,
-                    ifRight = {
-                        copy(userGameState = it).updateGame(gameType)
-                    }
+                    ifRight = { copy(userState = it).updateGame(gameType) }
                 )
             }
         )
+    }
 }

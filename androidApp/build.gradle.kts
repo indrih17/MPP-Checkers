@@ -88,5 +88,5 @@ tasks.withType<KotlinCompile> {
 dependencies {
     implementation(project(":sharedCode"))
     implementation(fileTree("include" to "*.jar", "dir" to "libs"))
-    implementation("androidx.appcompat:appcompat:1.1.0")
+    implementation("androidx.appcompat:appcompat:1.2.0")
 }

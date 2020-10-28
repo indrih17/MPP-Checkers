@@ -3,6 +3,7 @@ package com.kubsu.checkers.functions.move.human
 import com.kubsu.checkers.Either
 import com.kubsu.checkers.data.Failure
 import com.kubsu.checkers.data.entities.*
+import com.kubsu.checkers.data.game.ActivePlayer
 import com.kubsu.checkers.data.game.GameState
 import com.kubsu.checkers.data.game.Score
 import com.kubsu.checkers.data.game.updateFor
@@ -89,6 +90,8 @@ private fun Board.attack(
     GameState(
         board = swap(start, finish).update(enemy.toEmpty()),
         score = score updateFor start,
-        activePlayerColor = start.color.enemy(),
-        simpleMoves = 0
+        activePlayer = ActivePlayer(
+            color = start.color.enemy(),
+            simpleMoves = 0
+        )
     )

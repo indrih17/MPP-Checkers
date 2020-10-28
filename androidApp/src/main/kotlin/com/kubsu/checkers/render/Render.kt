@@ -8,7 +8,7 @@ import android.widget.TableLayout
 import android.widget.TableRow
 import com.kubsu.checkers.R
 import com.kubsu.checkers.data.entities.*
-import com.kubsu.checkers.data.game.UserGameState
+import com.kubsu.checkers.data.game.UserState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -44,8 +44,8 @@ private val Cell.Piece.Man.res: Int
 private val Cell.Piece.King.res: Int
     get() = if (color is CellColor.Light) R.drawable.white_king else R.drawable.black_king
 
-fun CommonData.render(tableLayout: TableLayout, onClick: (suspend (Cell) -> Unit)? = null) {
-    val board = userGameState.gameState.board
+fun UiState.render(tableLayout: TableLayout, onClick: (suspend (Cell) -> Unit)? = null) {
+    val board = userState.gameState.board
     for (row in board.rows) {
         val tableRow = tableLayout.context.tableRow()
 
@@ -55,7 +55,7 @@ fun CommonData.render(tableLayout: TableLayout, onClick: (suspend (Cell) -> Unit
             tableRow.addView(imageView, column)
 
             if (cell != null && onClick != null)
-                imageView.addClickListener(scope, userGameState, cell, onClick)
+                imageView.addClickListener(scope, userState, cell, onClick)
         }
         tableLayout.addView(tableRow, row)
     }
@@ -63,7 +63,7 @@ fun CommonData.render(tableLayout: TableLayout, onClick: (suspend (Cell) -> Unit
 
 private fun ImageView.addClickListener(
     scope: CoroutineScope,
-    userGameState: UserGameState,
+    userState: UserState,
     current: Cell,
     onClick: suspend (Cell) -> Unit
 ) {
@@ -72,6 +72,7 @@ private fun ImageView.addClickListener(
             onClick(current)
         }
     }
-    if (current == userGameState.startCell)
+    if (current == userState.startCell) {
         setBackgroundColor(Color.GREEN)
+    }
 }

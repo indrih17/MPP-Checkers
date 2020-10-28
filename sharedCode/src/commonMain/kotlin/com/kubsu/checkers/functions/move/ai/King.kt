@@ -35,7 +35,7 @@ private fun Board.attack(
     attackAiMoveOrNull(current, enemy, increase)
         ?.let {
             val next = it.board.getAvailableCells(
-                current = it.cell as Cell.Piece.King,
+                current = it.updatedCell as Cell.Piece.King,
                 increase = increase,
                 enemyCount = enemyCount + 1
             )
@@ -52,7 +52,7 @@ private fun Board.simpleMove(
     aiMove(current = current, new = cell)
         .let {
             val next = it.board.getAvailableCells(
-                current = it.cell as Cell.Piece.King,
+                current = it.updatedCell as Cell.Piece.King,
                 increase = increase,
                 enemyCount = enemyCount
             )

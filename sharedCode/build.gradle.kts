@@ -10,11 +10,12 @@ kotlin {
     android()
 
     sourceSets {
+        val coroutinesVersion = "1.4.0"
         val commonMain by getting {
             dependencies {
                 api(kotlin("stdlib-common"))
-                api("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3")
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.3")
+                api("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.3")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
             }
         }
         val commonTest by getting {
@@ -26,7 +27,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 api(kotlin("stdlib"))
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.3")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
             }
         }
         val androidTest by getting {

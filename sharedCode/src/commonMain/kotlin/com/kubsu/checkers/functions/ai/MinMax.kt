@@ -9,13 +9,13 @@ import kotlin.math.*
 
 fun GameState.getBestMoveOrNull(
     depth: Int = 4,
-    player: MaximizingPlayer = MaximizingPlayer.Self(activePlayerColor),
+    player: MaximizingPlayer = MaximizingPlayer.Self(activePlayer.color),
     data: MinMaxData = MinMaxData(alpha = Int.MIN_VALUE, beta = Int.MAX_VALUE)
 ): Node? =
     board
         .getAllMovesSequence(player)
         .map { board -> Node(board, board.minimax(depth - 1, player.enemy(), data)) }
-        .maxBy(Node::eval)
+        .maxByOrNull(Node::eval)
 
 private fun Board.minimax(depth: Int, player: MaximizingPlayer, data: MinMaxData): Int =
     if (depth == 0) {
@@ -24,12 +24,12 @@ private fun Board.minimax(depth: Int, player: MaximizingPlayer, data: MinMaxData
         var minMaxData = data
         getAllMovesSequence(player)
             .map { board -> board.minimax(depth - 1, player.enemy(), minMaxData) }
-            .completableFold(initial = null) { old, new, complete ->
+            .completableFold(initial = null) { old, new->
                 player
                     .bestEval(old ?: new, new)
-                    .also { best ->
+                    .let { best ->
                         minMaxData = player.updateMinMaxData(best, minMaxData)
-                        if (isNeedStop(minMaxData)) complete()
+                        best to isNeedStop(minMaxData)
                     }
             }
             ?: player.defaultEval

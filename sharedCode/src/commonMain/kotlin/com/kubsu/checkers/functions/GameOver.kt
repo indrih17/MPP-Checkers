@@ -24,6 +24,7 @@ private fun GameState.drawOrNull(): GameResult.Draw? {
     val light: Int = piecesList.count { it.color == CellColor.Light }
     val dark: Int = piecesList.count { it.color == CellColor.Dark }
     val survivors = listOf(light, dark)
+    val simpleMoves = activePlayer.simpleMoves
     return if (
         (survivors.any { it in 1..3 } && simpleMoves > 15)
         || (survivors.any { it in 4..5 } && simpleMoves > 30)

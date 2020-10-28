@@ -25,16 +25,16 @@ internal fun Board.attackAiMoveOrNull(current: Cell.Piece, enemy: Cell.Piece, in
 internal fun Cell.takeIfEmptyOrNull(): Cell.Empty? =
     if (this is Cell.Empty) this else null
 
-data class AIMove(val board: Board, val cell: Cell.Piece)
+data class AIMove(val board: Board, val updatedCell: Cell.Piece)
 
 inline fun <reified T : Cell.Piece> Board.aiMove(current: T, new: Cell.Empty): AIMove {
-    val cell = current.updateCoordinates(new)
+    val updated = current.updateCoordinates(new)
     val board = swap(current, new)
-    return if (cell is Cell.Piece.Man && board.needToMadeKing(cell)) {
-        val king = cell.toKing()
-        AIMove(board = board.update(king), cell = king)
+    return if (updated is Cell.Piece.Man && board.needToMadeKing(updated)) {
+        val king = king(updated)
+        AIMove(board = board.update(king), updatedCell = king)
     } else {
-        AIMove(board = board, cell = cell)
+        AIMove(board = board, updatedCell = updated)
     }
 }
 

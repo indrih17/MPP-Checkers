@@ -7,10 +7,10 @@ import com.kubsu.checkers.R
 import com.kubsu.checkers.data.Failure
 import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.game.GameState
-import com.kubsu.checkers.data.game.UserGameState
+import com.kubsu.checkers.data.game.UserState
 import com.kubsu.checkers.functions.*
-import com.kubsu.checkers.render.CommonData
-import com.kubsu.checkers.render.startGame
+import com.kubsu.checkers.render.UiState
+import com.kubsu.checkers.startGame
 import com.kubsu.checkers.toast
 import kotlinx.android.synthetic.main.activity_game.*
 import kotlinx.coroutines.*
@@ -23,10 +23,10 @@ class GameActivity : AppCompatActivity() {
         setContentView(R.layout.activity_game)
 
         startGame(
-            common = CommonData(
+            uiState = UiState(
                 tableLayout = board_table_layout,
-                userGameState = UserGameState(
-                    gameState = GameState(playerColor = CellColor.Light),
+                userState = UserState(
+                    gameState = createGameState(playerColor = CellColor.Light),
                     startCell = null
                 ),
                 scope = mainScope,
@@ -57,7 +57,7 @@ class GameActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     private fun updateData(state: GameState) {
         score_text_view.text = "${state.score.dark}:${state.score.light}"
-        message_text_view.text = when (state.activePlayerColor) {
+        message_text_view.text = when (state.activePlayer.color) {
             CellColor.Light -> "Ходит игрок №1 (Белые)"
             CellColor.Dark -> "Ходит игрок №2 (Чёрные)"
         }

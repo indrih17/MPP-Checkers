@@ -4,17 +4,18 @@ import com.kubsu.checkers.Either
 import com.kubsu.checkers.data.Failure
 import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.game.*
+import com.kubsu.checkers.functions.updateSimpleMoves
 import com.kubsu.checkers.map
 import com.kubsu.checkers.right
 
-fun UserGameState.makeMove(finishCell: Cell): Either<Failure.IncorrectMove, UserGameState> =
+fun UserState.makeMove(finishCell: Cell): Either<Failure.IncorrectMove, UserState> =
     if (startCell == null)
         justSelected(gameState, finishCell).right()
     else
         when (finishCell) {
             is Cell.Piece ->
                 if (startCell isSameColor finishCell)
-                    UserGameState(gameState, finishCell).right()
+                    UserState(gameState, finishCell).right()
                 else
                     this.right()
 
@@ -22,27 +23,22 @@ fun UserGameState.makeMove(finishCell: Cell): Either<Failure.IncorrectMove, User
                 gameState.updateGameState(startCell, finishCell, gameState.score)
         }
 
-private fun justSelected(gameState: GameState, finish: Cell): UserGameState =
-    if (finish is Cell.Piece && gameState.activePlayerColor == finish.color)
-        UserGameState(
-            gameState = gameState.copy(activePlayerColor = finish.color),
-            startCell = finish
-        )
+private fun justSelected(gameState: GameState, finish: Cell): UserState =
+    if (finish is Cell.Piece && gameState.activePlayer.color == finish.color)
+        UserState(gameState, startCell = finish)
     else
-        UserGameState(gameState, null)
+        UserState(gameState, startCell = null)
 
 private fun GameState.updateGameState(
     start: Cell.Piece,
     finish: Cell.Empty,
     score: Score
-): Either<Failure.IncorrectMove, UserGameState> =
+): Either<Failure.IncorrectMove, UserState> =
     board
-        .move(start, finish, score, simpleMoves)
+        .move(start, finish, score, activePlayer.simpleMoves)
         .map {
-            UserGameState(
-                gameState = it.copy(
-                    simpleMoves = if (it.score == score) simpleMoves + 1 else 0
-                ),
+            UserState(
+                gameState = it.updateSimpleMoves(score),
                 startCell = null
             )
         }
@@ -67,6 +63,8 @@ internal fun Board.simpleMove(
     GameState(
         board = swap(start, finish),
         score = score,
-        activePlayerColor = start.color.enemy(),
-        simpleMoves = simpleMoves + 1
+        activePlayer = ActivePlayer(
+            color = start.color.enemy(),
+            simpleMoves = simpleMoves + 1
+        )
     )

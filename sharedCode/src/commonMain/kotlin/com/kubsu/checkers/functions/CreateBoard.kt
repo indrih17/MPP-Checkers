@@ -1,6 +1,18 @@
 package com.kubsu.checkers.functions
 
 import com.kubsu.checkers.data.entities.*
+import com.kubsu.checkers.data.game.ActivePlayer
+import com.kubsu.checkers.data.game.GameState
+import com.kubsu.checkers.data.game.Score
+
+fun createGameState(playerColor: CellColor) = GameState(
+    board = createBoard(),
+    score = Score(0, 0),
+    activePlayer = ActivePlayer(
+        color = playerColor,
+        simpleMoves = 0
+    )
+)
 
 fun createBoard(): Board =
     matrix(size = 8) { row, column ->
