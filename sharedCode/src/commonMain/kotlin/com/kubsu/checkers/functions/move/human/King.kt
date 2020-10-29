@@ -37,7 +37,7 @@ internal fun Board.move(
 private infix fun Cell.onDiagonal(cell: Cell): Boolean =
     difference(row, cell.row) == difference(column, cell.column)
 
-private fun Board.getIntermediateCells(
+internal fun Board.getIntermediateCells(
     start: Cell,
     finish: Cell
 ): ImmutableList<Cell> {
@@ -49,15 +49,15 @@ private fun Board.getIntermediateCells(
     )
 }
 
-private data class PairCell(val lower: Cell, val higher: Cell)
+internal data class PairCell(val lower: Cell, val higher: Cell)
 
-private fun getLowerAndHigher(first: Cell, second: Cell): PairCell =
+internal fun getLowerAndHigher(first: Cell, second: Cell): PairCell =
     if (first.row > second.row)
         PairCell(lower = first, higher = second)
     else
         PairCell(lower = second, higher = first)
 
-private fun Board.getIntermediateCells(
+internal fun Board.getIntermediateCells(
     start: Cell,
     finish: Cell,
     columnIncrease: Int
@@ -72,16 +72,16 @@ private fun Board.getIntermediateCells(
     return result.toImmutableList()
 }
 
-private fun isSimpleMove(intermediateCells: ImmutableList<Cell>): Boolean =
+internal fun isSimpleMove(intermediateCells: ImmutableList<Cell>): Boolean =
     intermediateCells.all { it is Cell.Empty }
 
-private fun isAttack(start: Cell.Piece.King, enemy: Cell.Piece): Boolean =
+internal fun isAttack(start: Cell.Piece.King, enemy: Cell.Piece): Boolean =
     start isEnemy enemy
 
-private fun Collection<Cell>.geSingleEnemyOrNull(start: Cell.Piece): Cell.Piece? =
+internal fun Collection<Cell>.geSingleEnemyOrNull(start: Cell.Piece): Cell.Piece? =
     filterIsInstance<Cell.Piece>().singleOrNull(start::isEnemy)
 
-private fun Board.attack(
+internal fun Board.attack(
     start: Cell.Piece.King,
     finish: Cell.Empty,
     enemy: Cell.Piece,

@@ -26,7 +26,7 @@ fun createBoard(): Board =
             null
     }
 
-private fun isAccessible(row: Row, column: Column): Boolean =
+internal fun isAccessible(row: Row, column: Column): Boolean =
     (row + column) % 2 != 0
 
 private val darkRows = 0..2

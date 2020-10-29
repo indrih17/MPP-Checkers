@@ -7,7 +7,7 @@ import com.kubsu.checkers.data.game.GameState
 import com.kubsu.checkers.functions.move.ai.getAllMovesSequence
 import kotlin.math.*
 
-fun GameState.getBestMoveOrNull(
+internal fun GameState.getBestMoveOrNull(
     depth: Int = 4,
     player: MaximizingPlayer = MaximizingPlayer.Self(activePlayer.color),
     data: MinMaxData = MinMaxData(alpha = Int.MIN_VALUE, beta = Int.MAX_VALUE)
@@ -17,7 +17,7 @@ fun GameState.getBestMoveOrNull(
         .map { board -> Node(board, board.minimax(depth - 1, player.enemy(), data)) }
         .maxByOrNull(Node::eval)
 
-private fun Board.minimax(depth: Int, player: MaximizingPlayer, data: MinMaxData): Int =
+internal fun Board.minimax(depth: Int, player: MaximizingPlayer, data: MinMaxData): Int =
     if (depth == 0) {
         evaluation(player)
     } else {

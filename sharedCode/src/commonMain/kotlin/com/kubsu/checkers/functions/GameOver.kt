@@ -19,7 +19,7 @@ fun GameState.gameResultOrNull(): GameResult? =
         else -> drawOrNull()
     }
 
-private fun GameState.drawOrNull(): GameResult.Draw? {
+internal fun GameState.drawOrNull(): GameResult.Draw? {
     val piecesList = board.filterIsInstance<Cell.Piece>()
     val light: Int = piecesList.count { it.color == CellColor.Light }
     val dark: Int = piecesList.count { it.color == CellColor.Dark }

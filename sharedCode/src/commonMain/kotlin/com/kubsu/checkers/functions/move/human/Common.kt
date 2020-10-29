@@ -4,14 +4,18 @@ import com.kubsu.checkers.Either
 import com.kubsu.checkers.data.Failure
 import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.game.*
+import com.kubsu.checkers.def
 import com.kubsu.checkers.functions.updateSimpleMoves
 import com.kubsu.checkers.map
 import com.kubsu.checkers.right
 
-fun UserState.makeMove(finishCell: Cell): Either<Failure.IncorrectMove, UserState> =
-    if (startCell == null)
+suspend fun UserState.move(finishCell: Cell): Either<Failure.IncorrectMove, UserState> =
+    def { makeMove(finishCell) }
+
+internal fun UserState.makeMove(finishCell: Cell): Either<Failure.IncorrectMove, UserState> =
+    if (startCell == null) {
         justSelected(gameState, finishCell).right()
-    else
+    } else {
         when (finishCell) {
             is Cell.Piece ->
                 if (startCell isSameColor finishCell)
@@ -22,14 +26,15 @@ fun UserState.makeMove(finishCell: Cell): Either<Failure.IncorrectMove, UserStat
             is Cell.Empty ->
                 gameState.updateGameState(startCell, finishCell, gameState.score)
         }
+    }
 
-private fun justSelected(gameState: GameState, finish: Cell): UserState =
+internal fun justSelected(gameState: GameState, finish: Cell): UserState =
     if (finish is Cell.Piece && gameState.activePlayer.color == finish.color)
         UserState(gameState, startCell = finish)
     else
         UserState(gameState, startCell = null)
 
-private fun GameState.updateGameState(
+internal fun GameState.updateGameState(
     start: Cell.Piece,
     finish: Cell.Empty,
     score: Score
@@ -43,7 +48,7 @@ private fun GameState.updateGameState(
             )
         }
 
-private fun Board.move(
+internal fun Board.move(
     start: Cell.Piece,
     finish: Cell.Empty,
     score: Score,

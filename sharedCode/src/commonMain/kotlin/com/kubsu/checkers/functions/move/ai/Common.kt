@@ -1,9 +1,28 @@
 package com.kubsu.checkers.functions.move.ai
 
+import com.kubsu.checkers.Either
+import com.kubsu.checkers.data.Failure
 import com.kubsu.checkers.data.entities.*
+import com.kubsu.checkers.data.game.GameState
+import com.kubsu.checkers.data.game.UserState
 import com.kubsu.checkers.data.minmax.MaximizingPlayer
 import com.kubsu.checkers.data.minmax.isSameColor
+import com.kubsu.checkers.def
+import com.kubsu.checkers.functions.ai.getBestMoveOrNull
 import com.kubsu.checkers.functions.move.human.needToMadeKing
+import com.kubsu.checkers.functions.update
+import com.kubsu.checkers.left
+import com.kubsu.checkers.right
+
+suspend fun aIMove(gameState: GameState): Either<Failure, UserState> =
+    def { makeAIMove(gameState) }
+
+internal fun makeAIMove(gameState: GameState): Either<Failure, UserState> =
+    gameState
+        .getBestMoveOrNull()
+        ?.board
+        ?.let { Either.right(UserState(gameState = gameState.update(board = it), startCell = null)) }
+        ?: Either.left(Failure.NoMoves)
 
 internal fun Board.getAllMovesSequence(player: MaximizingPlayer): Sequence<Board> =
     filterIsInstance<Cell.Piece>()

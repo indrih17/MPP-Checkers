@@ -7,7 +7,7 @@ import com.kubsu.checkers.data.game.getScore
 import com.kubsu.checkers.data.game.Score
 import com.kubsu.checkers.data.game.ActivePlayer
 
-fun GameState.update(board: Board): GameState {
+internal fun GameState.update(board: Board): GameState {
     val newScore = board.getScore()
     return GameState(
         board = board,
@@ -18,8 +18,8 @@ fun GameState.update(board: Board): GameState {
     )
 }
 
-fun GameState.updateSimpleMoves(newScore: Score): GameState =
+internal fun GameState.updateSimpleMoves(newScore: Score): GameState =
     copy(activePlayer = activePlayer.updateSimpleMoves(newScore, score))
 
-fun ActivePlayer.updateSimpleMoves(newScore: Score, currentScore: Score): ActivePlayer =
+internal fun ActivePlayer.updateSimpleMoves(newScore: Score, currentScore: Score): ActivePlayer =
     if (newScore == currentScore) copy(simpleMoves = simpleMoves + 1) else copy(simpleMoves = 0)

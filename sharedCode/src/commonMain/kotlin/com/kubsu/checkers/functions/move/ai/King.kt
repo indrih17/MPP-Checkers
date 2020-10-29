@@ -8,7 +8,7 @@ internal fun Board.getAvailableCellsSequence(current: Cell.Piece.King): Sequence
         .map { increase -> getAvailableCells(current, increase).map(AIMove::board) }
         .flatten()
 
-private fun Board.getAvailableCells(
+internal fun Board.getAvailableCells(
     current: Cell.Piece.King,
     increase: Increase,
     enemyCount: Int = 0
@@ -26,7 +26,7 @@ private fun Board.getAvailableCells(
         null -> emptyList()
     }
 
-private fun Board.attack(
+internal fun Board.attack(
     current: Cell.Piece.King,
     enemy: Cell.Piece,
     increase: Increase,
@@ -43,7 +43,7 @@ private fun Board.attack(
         }
         ?: emptyList()
 
-private fun Board.simpleMove(
+internal fun Board.simpleMove(
     current: Cell.Piece.King,
     cell: Cell.Empty,
     increase: Increase,

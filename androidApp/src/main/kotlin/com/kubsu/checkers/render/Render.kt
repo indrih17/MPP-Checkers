@@ -61,7 +61,7 @@ fun UiState.render(tableLayout: TableLayout, onClick: (suspend (Cell) -> Unit)? 
     }
 }
 
-private fun ImageView.addClickListener(
+internal fun ImageView.addClickListener(
     scope: CoroutineScope,
     userState: UserState,
     current: Cell,

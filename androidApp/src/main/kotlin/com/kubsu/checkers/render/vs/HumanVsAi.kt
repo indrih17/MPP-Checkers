@@ -2,11 +2,10 @@ package com.kubsu.checkers.render.vs
 
 import com.kubsu.checkers.GameType
 import com.kubsu.checkers.data.game.UserState
-import com.kubsu.checkers.def
 import com.kubsu.checkers.fold
-import com.kubsu.checkers.functions.ai.makeAIMove
 import com.kubsu.checkers.functions.gameResultOrNull
-import com.kubsu.checkers.functions.move.human.makeMove
+import com.kubsu.checkers.functions.move.ai.aIMove
+import com.kubsu.checkers.functions.move.human.move
 import com.kubsu.checkers.render.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -46,7 +45,7 @@ internal fun UiState.makeMove(
     render(
         tableLayout = tableLayout,
         onClick = { clickedCell ->
-            def { userState.makeMove(clickedCell) }.fold(
+            userState.move(clickedCell).fold(
                 ifLeft = onFail,
                 ifRight = {
                     if (userState.isUserMadeMove(userState = it)) {
@@ -60,14 +59,14 @@ internal fun UiState.makeMove(
     )
 }
 
-private fun UserState.isUserMadeMove(userState: UserState): Boolean =
+internal fun UserState.isUserMadeMove(userState: UserState): Boolean =
     userState.gameState.activePlayer.color != gameState.activePlayer.color
 
-private fun UiState.makeMove(gameType: GameType.HumanVsAi, activePlayer: ActivePlayer.Ai) {
+internal fun UiState.makeMove(gameType: GameType.HumanVsAi, activePlayer: ActivePlayer.Ai) {
     val gameState = userState.gameState
     render(tableLayout)
     scope.launch(Dispatchers.Main) {
-        makeAIMove(gameState).fold(
+        aIMove(gameState).fold(
             ifLeft = onFail,
             ifRight = { copy(userState = it).updateGame(gameType, activePlayer.enemy) }
         )

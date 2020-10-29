@@ -30,7 +30,7 @@ internal fun Board.move(
     return either.map { it.checkAndSetKing(start, finish) }
 }
 
-private fun GameState.checkAndSetKing(
+internal fun GameState.checkAndSetKing(
     start: Cell.Piece.Man,
     finish: Cell.Empty
 ): GameState {
@@ -41,7 +41,7 @@ private fun GameState.checkAndSetKing(
         this
 }
 
-private fun isSimpleMove(start: Cell.Piece.Man, finish: Cell.Empty): Boolean =
+internal fun isSimpleMove(start: Cell.Piece.Man, finish: Cell.Empty): Boolean =
     start toLeftOf finish || start toRightOf finish
 
 private infix fun Cell.Piece.Man.toLeftOf(finish: Cell.Empty): Boolean =
@@ -56,7 +56,7 @@ private infix fun Cell.Piece.Man.toRightOf(finish: Cell.Empty): Boolean =
         CellColor.Dark -> row + 1 == finish.row && column + 1 == finish.column
     }
 
-private fun isAttack(
+internal fun isAttack(
     start: Cell.Piece.Man,
     finish: Cell.Empty,
     middle: Cell.Piece
@@ -68,7 +68,7 @@ private fun isAttack(
 @Suppress("NOTHING_TO_INLINE")
 private inline fun isInAttackZone(a: Int, b: Int): Boolean = abs(a - b) == 2
 
-private fun Board.middle(first: Cell.Piece, second: Cell.Empty): Cell =
+internal fun Board.middle(first: Cell.Piece, second: Cell.Empty): Cell =
     requireNotNull(
         get(
             row = average(first.row, second.row),
@@ -76,7 +76,7 @@ private fun Board.middle(first: Cell.Piece, second: Cell.Empty): Cell =
         )
     )
 
-private fun Board.attack(
+internal fun Board.attack(
     start: Cell.Piece.Man,
     finish: Cell.Empty,
     middle: Cell.Piece,
