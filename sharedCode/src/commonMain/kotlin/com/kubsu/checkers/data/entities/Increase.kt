@@ -8,3 +8,6 @@ internal val increasesSequence: Sequence<Increase> = sequenceOf(
     Increase(rowIncrease = -1, columnIncrease = +1),
     Increase(rowIncrease = +1, columnIncrease = +1)
 )
+
+fun Increase.inverted() =
+    Increase(rowIncrease = -rowIncrease, columnIncrease = -columnIncrease)

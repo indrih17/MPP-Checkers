@@ -4,11 +4,11 @@ import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.minmax.*
 import com.kubsu.checkers.completableFold
 import com.kubsu.checkers.data.game.GameState
-import com.kubsu.checkers.functions.move.ai.getAllMovesSequence
+import com.kubsu.checkers.functions.move.ai.getAvailableCellsSequence
 import kotlin.math.*
 
 internal fun GameState.getBestMoveOrNull(
-    depth: Int = 4,
+    depth: Int = 6,
     player: MaximizingPlayer = MaximizingPlayer.Self(activePlayer.color),
     data: MinMaxData = MinMaxData(alpha = Int.MIN_VALUE, beta = Int.MAX_VALUE)
 ): Node? =
@@ -24,7 +24,7 @@ internal fun Board.minimax(depth: Int, player: MaximizingPlayer, data: MinMaxDat
         var minMaxData = data
         getAllMovesSequence(player)
             .map { board -> board.minimax(depth - 1, player.enemy(), minMaxData) }
-            .completableFold(initial = null) { old, new->
+            .completableFold(initial = null) { old, new ->
                 player
                     .bestEval(old ?: new, new)
                     .let { best ->
@@ -35,21 +35,34 @@ internal fun Board.minimax(depth: Int, player: MaximizingPlayer, data: MinMaxDat
             ?: player.defaultEval
     }
 
+private fun Board.getAllMovesSequence(player: MaximizingPlayer): Sequence<Board> =
+    filterIsInstance<Cell.Piece>()
+        .asSequence()
+        .filter(player::isSameColor)
+        .map { startCell ->
+            when (startCell) {
+                is Cell.Piece.Man -> getAvailableCellsSequence(startCell)
+                is Cell.Piece.King -> getAvailableCellsSequence(startCell)
+            }
+        }
+        .flatten()
+
 internal fun Board.evaluation(player: MaximizingPlayer): Int {
     val pieceList = filterIsInstance<Cell.Piece>()
     val manCells = pieceList.filterIsInstance<Cell.Piece.Man>()
     val kingCells = pieceList.filterIsInstance<Cell.Piece.King>()
-    val mans = 2 * manCells.count(player::isSameColor) - manCells.count(player::isEnemyColor)
-    val kings = 2 * kingCells.count(player::isSameColor) - kingCells.count(player::isEnemyColor)
-    val badMoves = pieceList.map { if (isBadMove(it)) 2 else 0 }.sum()
-    return mans + 3 * kings - badMoves
-}
 
-internal fun Board.isBadMove(current: Cell.Piece): Boolean =
-    increasesSequence.any { increase ->
-        val cell = getOrNull(current, increase)
-        cell is Cell.Piece && cell isEnemy current && getOrNull(cell, increase) is Cell.Piece
+    val playerMans = manCells.count(player::isSameColor)
+    val playerKings = kingCells.count(player::isSameColor)
+    val enemyMans = manCells.count(player::isEnemyColor)
+    val enemyKings = kingCells.count(player::isEnemyColor)
+
+    return when (0) {
+        playerMans + playerKings -> Int.MIN_VALUE
+        enemyMans + enemyKings -> Int.MAX_VALUE
+        else -> 2 * (playerMans - enemyMans) + 5 * (playerKings - enemyKings)
     }
+}
 
 internal val MaximizingPlayer.defaultEval: Int
     get() = if (this is MaximizingPlayer.Self) Int.MIN_VALUE else Int.MAX_VALUE

@@ -20,7 +20,7 @@ inline fun <T : Any> Sequence<T>.completableFold(initial: T?, operation: (old: T
     return latest
 }
 
-suspend inline fun <T> def(noinline block: suspend CoroutineScope.() -> T) =
+suspend inline fun <T> background(noinline block: suspend CoroutineScope.() -> T) =
     withContext(Dispatchers.Default, block = block)
 
 @Suppress("NOTHING_TO_INLINE")

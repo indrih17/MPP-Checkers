@@ -5,9 +5,7 @@ import com.kubsu.checkers.data.Failure
 import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.game.GameState
 import com.kubsu.checkers.data.game.UserState
-import com.kubsu.checkers.data.minmax.MaximizingPlayer
-import com.kubsu.checkers.data.minmax.isSameColor
-import com.kubsu.checkers.def
+import com.kubsu.checkers.background
 import com.kubsu.checkers.functions.ai.getBestMoveOrNull
 import com.kubsu.checkers.functions.move.human.needToMadeKing
 import com.kubsu.checkers.functions.update
@@ -15,7 +13,7 @@ import com.kubsu.checkers.left
 import com.kubsu.checkers.right
 
 suspend fun aIMove(gameState: GameState): Either<Failure, UserState> =
-    def { makeAIMove(gameState) }
+    background { makeAIMove(gameState) }
 
 internal fun makeAIMove(gameState: GameState): Either<Failure, UserState> =
     gameState
@@ -24,17 +22,6 @@ internal fun makeAIMove(gameState: GameState): Either<Failure, UserState> =
         ?.let { Either.right(UserState(gameState = gameState.update(board = it), startCell = null)) }
         ?: Either.left(Failure.NoMoves)
 
-internal fun Board.getAllMovesSequence(player: MaximizingPlayer): Sequence<Board> =
-    filterIsInstance<Cell.Piece>()
-        .asSequence()
-        .filter(player::isSameColor)
-        .map { startCell ->
-            when (startCell) {
-                is Cell.Piece.Man -> getAvailableCellsSequence(startCell)
-                is Cell.Piece.King -> getAvailableCellsSequence(startCell)
-            }
-        }
-        .flatten()
 
 internal fun Board.attackAiMoveOrNull(current: Cell.Piece, enemy: Cell.Piece, increase: Increase): AIMove? =
     getOrNull(enemy, increase)
@@ -46,7 +33,10 @@ internal fun Cell.takeIfEmptyOrNull(): Cell.Empty? =
 
 data class AIMove(val board: Board, val updatedCell: Cell.Piece)
 
-inline fun <reified T : Cell.Piece> Board.aiMove(current: T, new: Cell.Empty): AIMove {
+internal fun Board.aiMove(current: Cell.Piece, killed: Cell.Piece, new: Cell.Empty): AIMove =
+    update(killed.toEmpty()).aiMove(current = current, new = new)
+
+internal inline fun <reified T : Cell.Piece> Board.aiMove(current: T, new: Cell.Empty): AIMove {
     val updated = current.updateCoordinates(new)
     val board = swap(current, new)
     return if (updated is Cell.Piece.Man && board.needToMadeKing(updated)) {
@@ -56,6 +46,3 @@ inline fun <reified T : Cell.Piece> Board.aiMove(current: T, new: Cell.Empty): A
         AIMove(board = board, updatedCell = updated)
     }
 }
-
-fun Board.aiMove(current: Cell.Piece, killed: Cell.Piece, new: Cell.Empty): AIMove =
-    update(killed.toEmpty()).aiMove(current = current, new = new)

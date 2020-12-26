@@ -4,13 +4,13 @@ import com.kubsu.checkers.Either
 import com.kubsu.checkers.data.Failure
 import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.game.*
-import com.kubsu.checkers.def
+import com.kubsu.checkers.background
 import com.kubsu.checkers.functions.updateSimpleMoves
 import com.kubsu.checkers.map
 import com.kubsu.checkers.right
 
 suspend fun UserState.move(finishCell: Cell): Either<Failure.IncorrectMove, UserState> =
-    def { makeMove(finishCell) }
+    background { makeMove(finishCell) }
 
 internal fun UserState.makeMove(finishCell: Cell): Either<Failure.IncorrectMove, UserState> =
     if (startCell == null) {

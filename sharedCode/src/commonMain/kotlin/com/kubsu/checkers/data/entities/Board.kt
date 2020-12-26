@@ -6,6 +6,7 @@ typealias Board = Matrix<Cell?>
 val Board.piecesAmount: Int
     inline get() = 12
 
+/** Updating a cell on the board. */
 fun Board.update(cell: Cell): Board =
     set(cell.row, cell.column, cell)
 

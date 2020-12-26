@@ -21,6 +21,7 @@ internal fun Board.getAvailableCells(current: Cell.Piece.Man, increase: Increase
         null -> null
     }
 
+/** @return true if there is an attempt to move back. */
 internal fun isBackMove(color: CellColor, increase: Increase): Boolean =
     when (color) {
         CellColor.Light -> increase.rowIncrease == 1
