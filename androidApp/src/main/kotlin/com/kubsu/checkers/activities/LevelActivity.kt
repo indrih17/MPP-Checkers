@@ -3,23 +3,26 @@ package com.kubsu.checkers.activities
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.kubsu.checkers.GameType
-import com.kubsu.checkers.R
+import com.kubsu.checkers.databinding.ActivityLevelBinding
 import com.kubsu.checkers.startActivity
-import kotlinx.android.synthetic.main.activity_level.*
 
 class LevelActivity : AppCompatActivity() {
+    private val binding by lazy(LazyThreadSafetyMode.NONE) { ActivityLevelBinding.inflate(layoutInflater) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_level)
 
-        human_vs_human_button.setOnClickListener {
-            startGameActivity(GameType.HumanVsHuman)
-        }
-        human_vs_ai_button.setOnClickListener {
-            startGameActivity(GameType.HumanVsAi)
-        }
-        ai_vs_ai_button.setOnClickListener {
-            startGameActivity(GameType.AiVsAi)
+        with(binding) {
+            setContentView(root)
+            humanVsHumanButton.setOnClickListener {
+                startGameActivity(GameType.HumanVsHuman)
+            }
+            humanVsAiButton.setOnClickListener {
+                startGameActivity(GameType.HumanVsAi)
+            }
+            aiVsAiButton.setOnClickListener {
+                startGameActivity(GameType.AiVsAi)
+            }
         }
     }
 

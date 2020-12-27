@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/checkers"
     android:orientation="vertical">
 
     <Button
-        android:id="@+id/human_vs_human_button"
+        android:id="@+id/humanVsHumanButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -15,10 +17,10 @@
         android:background="@android:color/white"
         android:padding="20dp"
         android:scaleType="fitCenter"
-        android:text="Человек против человека" />
+        android:text="@string/h_vs_h" />
 
     <Button
-        android:id="@+id/human_vs_ai_button"
+        android:id="@+id/humanVsAiButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -28,10 +30,10 @@
         android:enabled="true"
         android:padding="20dp"
         android:scaleType="fitCenter"
-        android:text="Человек против ИИ" />
+        android:text="@string/h_vs_ai" />
 
     <Button
-        android:id="@+id/ai_vs_ai_button"
+        android:id="@+id/aiVsAiButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -41,5 +43,5 @@
         android:enabled="true"
         android:padding="20dp"
         android:scaleType="fitCenter"
-        android:text="ИИ против ИИ" />
+        android:text="@string/ai_vs_ai" />
 </RelativeLayout>

@@ -69,7 +69,7 @@ class MinMaxTests {
         assertEquals(
             Node(
                 defaultBoard.update(Cell.Piece.King(4, 5, color)),
-                eval = 2147483647
+                eval = Int.MAX_VALUE
             ),
             gameState.getBestMoveOrNull()
         )

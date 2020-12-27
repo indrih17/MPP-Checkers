@@ -18,8 +18,8 @@ android {
         minSdkVersion(21)
         targetSdkVersion(30)
 
-        versionName = "0.2.0"
-        versionCode = 6
+        versionName = "0.2.1"
+        versionCode = 7
 
         base.archivesBaseName = "${applicationName}_$versionName"
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
@@ -77,6 +77,10 @@ android {
     androidExtensions {
         isExperimental = true
     }
+
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 tasks.withType<KotlinCompile> {
@@ -87,6 +91,6 @@ tasks.withType<KotlinCompile> {
 
 dependencies {
     implementation(project(":sharedCode"))
-    implementation(fileTree("include" to "*.jar", "dir" to "libs"))
     implementation("androidx.appcompat:appcompat:1.2.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.2.0")
 }

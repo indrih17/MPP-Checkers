@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Шашки</string>
+    <string name="h_vs_h">Человек против человека</string>
+    <string name="h_vs_ai">Человек против ИИ</string>
+    <string name="ai_vs_ai">ИИ против ИИ</string>
+    <string name="incorrect_move">Некорректный ход</string>
+    <string name="no_moves">Отстутствуют ходы!</string>
+    <string name="light_win">Победа за Белыми! Поздравляем!</string>
+    <string name="dark_win">Победа за Чёрными! Поздравляем!</string>
+    <string name="draw">Ничья!</string>
+    <string name="light_moves">Ходит игрок №1 (Белые)</string>
+    <string name="dark_moves">Ходит игрок №2 (Чёрные)</string>
+</resources>

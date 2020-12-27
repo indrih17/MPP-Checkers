@@ -14,16 +14,16 @@ internal fun GameState.getBestMoveOrNull(
 ): Node? =
     board
         .getAllMovesSequence(player)
-        .map { board -> Node(board, board.minMax(depth - 1, player.enemy(), data)) }
+        .mapNotNull { board -> board.minMax(depth - 1, player.enemy(), data)?.let { Node(board, it) } }
         .maxByOrNull(Node::eval)
 
-internal fun Board.minMax(depth: Int, player: MaximizingPlayer, data: MinMaxData): Int =
+internal fun Board.minMax(depth: Int, player: MaximizingPlayer, data: MinMaxData): Int? =
     if (depth == 0) {
         evaluation(player)
     } else {
         var minMaxData = data
         getAllMovesSequence(player)
-            .map { board -> board.minMax(depth - 1, player.enemy(), minMaxData) }
+            .mapNotNull { board -> board.minMax(depth - 1, player.enemy(), minMaxData) }
             .completableFold(initial = null) { old, new ->
                 player
                     .bestEval(old ?: new, new)
@@ -32,7 +32,6 @@ internal fun Board.minMax(depth: Int, player: MaximizingPlayer, data: MinMaxData
                         best to isNeedStop(minMaxData)
                     }
             }
-            ?: player.defaultEval
     }
 
 private fun Board.getAllMovesSequence(player: MaximizingPlayer): Sequence<Board> =

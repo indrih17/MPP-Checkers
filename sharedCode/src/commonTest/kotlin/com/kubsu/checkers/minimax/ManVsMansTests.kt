@@ -29,7 +29,7 @@ class ManVsMansTests {
         assertEquals(
             Node(
                 board = defaultBoard.update(Cell.Piece.Man(5, 0, color)),
-                eval = 2147483647
+                eval = Int.MAX_VALUE
             ),
             gameState.getBestMoveOrNull()
         )
@@ -48,7 +48,7 @@ class ManVsMansTests {
         assertEquals(
             Node(
                 board = defaultBoard.update(Cell.Piece.Man(4, 5, color)),
-                eval = 2147483647
+                eval = Int.MAX_VALUE
             ),
             gameState.getBestMoveOrNull()
         )
@@ -92,7 +92,7 @@ class ManVsMansTests {
                     .update(Cell.Piece.Man(4, 5, color))
                     .update(Cell.Piece.Man(2, 7, color.enemy()))
                     .update(Cell.Piece.Man(7, 6, color)),
-                eval = 2147483647
+                eval = Int.MAX_VALUE
             ),
             gameState.getBestMoveOrNull()
         )

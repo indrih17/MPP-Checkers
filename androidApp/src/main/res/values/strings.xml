@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Checkers</string>
+    <string name="h_vs_h">Human vs human</string>
+    <string name="h_vs_ai">Human vs AI</string>
+    <string name="ai_vs_ai">AI vs AI</string>
+    <string name="incorrect_move">Incorrect move</string>
+    <string name="no_moves">There are no moves!</string>
+    <string name="light_win">Victory for Light! Congratulations!</string>
+    <string name="dark_win">Victory for Dark! Congratulations!</string>
+    <string name="draw">Draw!</string>
+    <string name="light_moves">Player №1 moves (Light)</string>
+    <string name="dark_moves">Player №2 moves (Dark)</string>
 </resources>

@@ -11,12 +11,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 sealed class ActivePlayer {
+    abstract val enemy: ActivePlayer
+
     object Human : ActivePlayer() {
-        val enemy = Ai
+        override val enemy = Ai
     }
 
     object Ai : ActivePlayer() {
-        val enemy = Human
+        override val enemy = Human
     }
 }
 
@@ -24,13 +26,13 @@ internal fun UiState.updateGame(
     gameType: GameType.HumanVsAi,
     activePlayer: ActivePlayer
 ) {
-    tableLayout.clear()
     updateData(userState.gameState)
     userState
         .gameState
         .gameResultOrNull()
         ?.let(endGame)
         ?: run {
+            tableLayout.clear()
             when (activePlayer) {
                 is ActivePlayer.Human -> makeMove(gameType, activePlayer)
                 is ActivePlayer.Ai -> makeMove(gameType, activePlayer)
@@ -63,10 +65,9 @@ internal fun UserState.isUserMadeMove(userState: UserState): Boolean =
     userState.gameState.activePlayer != gameState.activePlayer
 
 internal fun UiState.makeMove(gameType: GameType.HumanVsAi, activePlayer: ActivePlayer.Ai) {
-    val gameState = userState.gameState
     render(tableLayout)
     scope.launch(Dispatchers.Main) {
-        makeAIMove(gameState).fold(
+        makeAIMove(userState.gameState).fold(
             ifLeft = onFail,
             ifRight = { copy(userState = it).updateGame(gameType, activePlayer.enemy) }
         )
