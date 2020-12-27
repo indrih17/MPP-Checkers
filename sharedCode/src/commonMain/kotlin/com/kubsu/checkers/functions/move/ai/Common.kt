@@ -7,7 +7,6 @@ import com.kubsu.checkers.data.game.GameState
 import com.kubsu.checkers.data.game.UserState
 import com.kubsu.checkers.background
 import com.kubsu.checkers.functions.ai.getBestMoveOrNull
-import com.kubsu.checkers.functions.move.human.needToMadeKing
 import com.kubsu.checkers.functions.passTurnToEnemy
 import com.kubsu.checkers.left
 import com.kubsu.checkers.right
@@ -48,3 +47,10 @@ internal inline fun <reified T : Cell.Piece> Board.aiMove(current: T, new: Cell.
         board to updated
     }
 }
+
+/** @return true if a [man] is to be made king. */
+fun Board.needToMadeKing(man: Cell.Piece.Man): Boolean =
+    man.row == when (man.color) {
+        CellColor.Light -> firstIndex
+        CellColor.Dark -> lastIndex
+    }

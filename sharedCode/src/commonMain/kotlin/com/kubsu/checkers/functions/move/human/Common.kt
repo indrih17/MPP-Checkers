@@ -43,25 +43,25 @@ private fun GameState.updateGameState(
         .map { UserState(gameState = it, startPiece = null) }
 
 private fun Board.move(
-    start: Cell.Piece,
-    finish: Cell.Empty,
+    piece: Cell.Piece,
+    destination: Cell.Empty,
     score: Score,
     simpleMoves: Int
 ): Either<Failure.IncorrectMove, GameState> =
-    when (start) {
-        is Cell.Piece.Man -> move(start, finish, score, simpleMoves)
-        is Cell.Piece.King -> move(start, finish, score, simpleMoves)
+    when (piece) {
+        is Cell.Piece.Man -> move(piece, destination, score, simpleMoves)
+        is Cell.Piece.King -> move(piece, destination, score, simpleMoves)
     }
 
 internal fun Board.simpleMove(
-    start: Cell.Piece,
-    finish: Cell.Empty,
+    piece: Cell.Piece,
+    destination: Cell.Empty,
     score: Score,
     simpleMoves: Int
 ) =
     GameState(
-        board = swap(start, finish),
+        board = swap(piece, destination),
         score = score,
         simpleMoves = simpleMoves + 1,
-        activePlayer = start.color.enemy()
+        activePlayer = piece.color.enemy()
     )

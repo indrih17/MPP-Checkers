@@ -13,82 +13,81 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
 internal fun Board.move(
-    start: Cell.Piece.King,
-    finish: Cell.Empty,
+    king: Cell.Piece.King,
+    destination: Cell.Empty,
     score: Score,
     simpleMoves: Int
 ): Either<Failure.IncorrectMove, GameState> =
-    if (start onDiagonal finish) {
-        val intermediateCells = getIntermediateCells(start, finish)
+    if (king onDiagonal destination) {
+        val intermediateCells = getIntermediateCells(king, destination)
         if (isSimpleMove(intermediateCells)) {
-            simpleMove(start, finish, score, simpleMoves).right()
+            simpleMove(king, destination, score, simpleMoves).right()
         } else {
-            val enemy = intermediateCells.geSingleEnemyOrNull(start)
-            if (enemy != null && isAttack(start, enemy))
-                attack(start, finish, enemy, score).right()
+            val enemy = intermediateCells.geSingleEnemyOrNull(king)
+            if (enemy != null && isAttack(king, enemy))
+                attack(king, destination, enemy, score).right()
             else
-                Failure.IncorrectMove(start, finish).left()
+                Failure.IncorrectMove(king, destination).left()
         }
     } else {
-        Failure.IncorrectMove(start, finish).left()
+        Failure.IncorrectMove(king, destination).left()
     }
 
 private infix fun Cell.onDiagonal(cell: Cell): Boolean =
     difference(row, cell.row) == difference(column, cell.column)
 
-internal fun Board.getIntermediateCells(
-    start: Cell,
-    finish: Cell
+private fun Board.getIntermediateCells(
+    king: Cell.Piece.King,
+    destination: Cell.Empty
 ): ImmutableList<Cell> {
-    val (lower, higher) = getLowerAndHigher(start, finish)
+    val (bottom, top) = getBottomAndTop(king, destination)
     return getIntermediateCells(
-        start = higher,
-        finish = lower,
-        columnIncrease = if (higher.column < lower.column) 1 else -1
+        top = top,
+        bottom = bottom,
+        columnIncrease = if (top.column < bottom.column) 1 else -1
     )
 }
 
-internal data class PairCell(val lower: Cell, val higher: Cell)
-
-internal fun getLowerAndHigher(first: Cell, second: Cell): PairCell =
+/** @return pair of bottom (row) cell and top (row too) cell. */
+private fun getBottomAndTop(first: Cell, second: Cell): Pair<Cell, Cell> =
     if (first.row > second.row)
-        PairCell(lower = first, higher = second)
+        first to second
     else
-        PairCell(lower = second, higher = first)
+        second to first
 
-internal fun Board.getIntermediateCells(
-    start: Cell,
-    finish: Cell,
+private fun Board.getIntermediateCells(
+    top: Cell,
+    bottom: Cell,
     columnIncrease: Int
 ): ImmutableList<Cell> {
     val result = mutableListOf<Cell>()
-    var row = start.row + 1
-    var column = start.column + columnIncrease
-    while (row < finish.row) {
+    var row = top.row + 1
+    var column = top.column + columnIncrease
+    while (row < bottom.row) {
         result.add(requireNotNull(get(row, column)))
         row++; column += columnIncrease
     }
     return result.toImmutableList()
 }
 
-internal fun isSimpleMove(intermediateCells: ImmutableList<Cell>): Boolean =
+private fun isSimpleMove(intermediateCells: ImmutableList<Cell>): Boolean =
     intermediateCells.all { it is Cell.Empty }
 
-internal fun isAttack(start: Cell.Piece.King, enemy: Cell.Piece): Boolean =
-    start isEnemy enemy
+private fun isAttack(king: Cell.Piece.King, piece: Cell.Piece): Boolean =
+    king isEnemy piece
 
-internal fun Collection<Cell>.geSingleEnemyOrNull(start: Cell.Piece): Cell.Piece? =
-    filterIsInstance<Cell.Piece>().singleOrNull(start::isEnemy)
+private fun Iterable<Cell>.geSingleEnemyOrNull(piece: Cell.Piece): Cell.Piece? =
+    filterIsInstance<Cell.Piece>().singleOrNull(piece::isEnemy)
 
-internal fun Board.attack(
-    start: Cell.Piece.King,
-    finish: Cell.Empty,
+private fun Board.attack(
+    king: Cell.Piece.King,
+    destination: Cell.Empty,
     enemy: Cell.Piece,
     score: Score
 ) =
     GameState(
-        board = swap(start, finish).update(enemy.toEmpty()),
-        score = score updateFor start.color,
-        activePlayer = start.color.enemy(),
+        board = swap(king, destination).update(enemy.toEmpty()),
+        score = score updateFor king.color,
+        activePlayer = king.color.enemy(),
         simpleMoves = 0
     )

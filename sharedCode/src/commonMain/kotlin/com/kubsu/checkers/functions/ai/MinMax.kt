@@ -5,7 +5,8 @@ import com.kubsu.checkers.data.minmax.*
 import com.kubsu.checkers.completableFold
 import com.kubsu.checkers.data.game.GameState
 import com.kubsu.checkers.functions.move.ai.getAvailableCellsSequence
-import kotlin.math.*
+import kotlin.math.max
+import kotlin.math.min
 
 internal fun GameState.getBestMoveOrNull(
     depth: Int = 6,
@@ -38,10 +39,10 @@ private fun Board.getAllMovesSequence(player: MaximizingPlayer): Sequence<Board>
     filterIsInstance<Cell.Piece>()
         .asSequence()
         .filter(player::isSelfPiece)
-        .map { startCell ->
-            when (startCell) {
-                is Cell.Piece.Man -> getAvailableCellsSequence(startCell)
-                is Cell.Piece.King -> getAvailableCellsSequence(startCell)
+        .map { selfPiece: Cell.Piece ->
+            when (selfPiece) {
+                is Cell.Piece.Man -> getAvailableCellsSequence(selfPiece)
+                is Cell.Piece.King -> getAvailableCellsSequence(selfPiece)
             }
         }
         .flatten()

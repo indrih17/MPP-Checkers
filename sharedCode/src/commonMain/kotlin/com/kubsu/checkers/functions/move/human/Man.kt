@@ -1,32 +1,35 @@
 package com.kubsu.checkers.functions.move.human
 
-import com.kubsu.checkers.Either
+import com.kubsu.checkers.*
 import com.kubsu.checkers.data.Failure
 import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.game.GameState
 import com.kubsu.checkers.data.game.Score
 import com.kubsu.checkers.data.game.updateFor
-import com.kubsu.checkers.left
-import com.kubsu.checkers.map
-import com.kubsu.checkers.right
-import kotlin.math.abs
+import com.kubsu.checkers.functions.move.ai.needToMadeKing
 
 internal fun Board.move(
-    start: Cell.Piece.Man,
-    finish: Cell.Empty,
+    man: Cell.Piece.Man,
+    destination: Cell.Empty,
     score: Score,
     simpleMoves: Int
 ): Either<Failure.IncorrectMove, GameState> {
-    val either = if (isSimpleMove(start, finish)) {
-        simpleMove(start, finish, score, simpleMoves).right()
+    val result = if (isSimpleMove(man, destination)) {
+        simpleMove(man, destination, score, simpleMoves).right()
     } else {
-        val middleCell = middle(start, finish)
-        if (middleCell is Cell.Piece && isAttack(start, finish, middleCell))
-            attack(start, finish, middleCell, score).right()
+        val middleCell = middle(man, destination)
+        if (middleCell is Cell.Piece && isAttack(man, destination, middleCell))
+            attack(man, destination, middleCell, score).right()
         else
-            Failure.IncorrectMove(start, finish).left()
+            Failure.IncorrectMove(man, destination).left()
     }
-    return either.map { it.checkAndSetKing(start, finish) }
+    return result.map { gameState ->
+        val new = man.updateCoordinates(destination)
+        if (gameState.board.needToMadeKing(new))
+            gameState.copy(board = gameState.board.setKing(new))
+        else
+            gameState
+    }
 }
 
 /** @return true if move between [start] and [finish] is simple. */
@@ -52,49 +55,37 @@ internal fun Board.middle(first: Cell.Piece, second: Cell.Empty): Cell? =
         column = average(first.column, second.column)
     )
 
-/** @return true if [start] can attack [middle] and go to [finish]. */
+/** @return true if [man] can attack [middle] and go to [empty]. */
 internal fun isAttack(
-    start: Cell.Piece.Man,
-    finish: Cell.Empty,
+    man: Cell.Piece.Man,
+    empty: Cell.Empty,
     middle: Cell.Piece
 ): Boolean =
-    isInAttackZone(start.row, finish.row)
-            && isInAttackZone(start.column, finish.column)
-            && start isEnemy middle
+    man isEnemy middle && isInAttackZone(man, empty)
 
+/** @return true if [man] can move into [cell]. */
 @Suppress("NOTHING_TO_INLINE")
-private inline fun isInAttackZone(a: Int, b: Int): Boolean = abs(a - b) == 2
+private inline fun isInAttackZone(man: Cell.Piece.Man, cell: Cell.Empty): Boolean =
+    difference(man.row, cell.row) == 2 && difference(man.column, cell.column) == 2
 
-/** Update [GameState]: [middle] killed, [start] goes to [finish], score was increased. */
+/** Update [GameState]: [enemy] killed, [man] goes to [destination], score was increased. */
 internal fun Board.attack(
-    start: Cell.Piece.Man,
-    finish: Cell.Empty,
-    middle: Cell.Piece,
+    man: Cell.Piece.Man,
+    destination: Cell.Empty,
+    enemy: Cell.Piece,
     score: Score
 ) =
     GameState(
-        board = swap(start, finish).update(middle.toEmpty()),
-        score = score updateFor start.color,
-        activePlayer = start.color.enemy(),
+        board = swap(man, destination).update(enemy.toEmpty()),
+        score = score updateFor man.color,
+        activePlayer = man.color.enemy(),
         simpleMoves = 0
     )
 
+/** Average number between [a] and [b]. */
 @Suppress("NOTHING_TO_INLINE")
 private inline fun average(a: Int, b: Int): Int = (a + b) / 2
 
-internal fun GameState.checkAndSetKing(
-    start: Cell.Piece.Man,
-    finish: Cell.Empty
-): GameState {
-    val new = start.updateCoordinates(finish)
-    return if (board.needToMadeKing(new))
-        copy(board = board.setKing(new))
-    else
-        this
-}
-
-fun Board.needToMadeKing(cell: Cell.Piece.Man): Boolean =
-    cell.row == if (cell.color is CellColor.Light) firstIndex else lastIndex
-
-internal fun Board.setKing(cell: Cell.Piece.Man): Board =
-    update(king(cell))
+/** Turns [man] into [king]. */
+internal fun Board.setKing(man: Cell.Piece.Man): Board =
+    update(king(man))
