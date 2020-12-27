@@ -3,7 +3,7 @@ package com.kubsu.checkers.render.vs
 import com.kubsu.checkers.GameType
 import com.kubsu.checkers.fold
 import com.kubsu.checkers.functions.gameResultOrNull
-import com.kubsu.checkers.functions.move.ai.aIMove
+import com.kubsu.checkers.functions.move.ai.makeAIMove
 import com.kubsu.checkers.render.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,7 +18,7 @@ internal fun UiState.updateGame(gameType: GameType.AiVsAi) {
     } else {
         render(tableLayout)
         scope.launch(Dispatchers.Main) {
-            aIMove(gameState).fold(
+            makeAIMove(gameState).fold(
                 ifLeft = onFail,
                 ifRight = { copy(userState = it).updateGame(gameType) }
             )

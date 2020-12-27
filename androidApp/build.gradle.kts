@@ -8,18 +8,18 @@ plugins {
 }
 
 android {
-    compileSdkVersion(29)
-    buildToolsVersion("29.0.2")
+    compileSdkVersion(30)
+    buildToolsVersion("30.0.2")
 
     defaultConfig {
         val applicationName = "checkers"
         applicationId = "com.kubsu.$applicationName"
 
         minSdkVersion(21)
-        targetSdkVersion(29)
+        targetSdkVersion(30)
 
-        versionName = "0.1.4"
-        versionCode = 5
+        versionName = "0.2.0"
+        versionCode = 6
 
         base.archivesBaseName = "${applicationName}_$versionName"
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"

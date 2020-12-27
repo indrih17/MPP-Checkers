@@ -22,8 +22,8 @@ class ManVsMansTests {
             board = defaultBoard
                 .update(Cell.Piece.Man(7, 2, color))
                 .update(Cell.Piece.Man(6, 1, color.enemy())),
-            score = Score(0,0),
-            activePlayerColor = color,
+            score = Score(0, 0),
+            activePlayer = color,
             simpleMoves = 0
         )
         assertEquals(
@@ -41,8 +41,8 @@ class ManVsMansTests {
             board = defaultBoard
                 .update(Cell.Piece.Man(6, 3, color))
                 .update(Cell.Piece.Man(5, 4, color.enemy())),
-            score = Score(0,0),
-            activePlayerColor = color,
+            score = Score(0, 0),
+            activePlayer = color,
             simpleMoves = 0
         )
         assertEquals(
@@ -60,8 +60,8 @@ class ManVsMansTests {
             board = defaultBoard
                 .update(Cell.Piece.Man(7, 2, color))
                 .update(Cell.Piece.Man(5, 4, color.enemy())),
-            score = Score(0,0),
-            activePlayerColor = color,
+            score = Score(0, 0),
+            activePlayer = color,
             simpleMoves = 0
         )
         assertEquals(
@@ -69,7 +69,7 @@ class ManVsMansTests {
                 board = defaultBoard
                     .update(Cell.Piece.Man(6, 1, color))
                     .update(Cell.Piece.Man(5, 4, color.enemy())),
-                eval = 1
+                eval = Int.MIN_VALUE
             ),
             gameState.getBestMoveOrNull()
         )
@@ -82,8 +82,8 @@ class ManVsMansTests {
                 .update(Cell.Piece.Man(5, 4, color))
                 .update(Cell.Piece.Man(2, 7, color.enemy()))
                 .update(Cell.Piece.Man(7, 6, color)),
-            score = Score(0,0),
-            activePlayerColor = color,
+            score = Score(0, 0),
+            activePlayer = color,
             simpleMoves = 0
         )
         assertEquals(

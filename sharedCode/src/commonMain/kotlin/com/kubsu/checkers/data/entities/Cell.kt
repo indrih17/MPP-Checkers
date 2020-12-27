@@ -4,9 +4,9 @@ typealias Row = Int
 typealias Column = Int
 
 /**
- * Man - шашка по-английски
- * King - дамка.
- * Piece - фигура.
+ * - Man Шашка по-английски.
+ * - King Дамка.
+ * - Piece Фигура.
  */
 sealed class Cell(open val row: Row, open val column: Column) {
     sealed class Piece(row: Row, column: Column, open val color: CellColor) : Cell(row, column) {
@@ -41,14 +41,8 @@ fun Cell.Piece.toEmpty() =
 fun empty(piece: Cell.Piece) =
     Cell.Empty(piece.row, piece.column)
 
-infix fun Cell.Piece.isSelf(cell: Cell.Piece): Boolean =
-    !isEnemy(cell)
-
 infix fun Cell.Piece.isEnemy(cell: Cell.Piece): Boolean =
     color != cell.color
-
-infix fun Cell.Piece.isEnemy(cellColor: CellColor): Boolean =
-    color != cellColor
 
 infix fun Cell.Piece.isSameColor(cell: Cell.Piece): Boolean =
     color == cell.color

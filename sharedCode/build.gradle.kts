@@ -10,7 +10,7 @@ kotlin {
     android()
 
     sourceSets {
-        val coroutinesVersion = "1.4.0"
+        val coroutinesVersion = "1.4.2"
         val commonMain by getting {
             dependencies {
                 api(kotlin("stdlib-common"))
@@ -56,7 +56,7 @@ tasks.withType<AbstractTestTask> {
 
 // It is necessay because we need to have access to context on CommonCode to use SQLDelight database
 android {
-    compileSdkVersion(29)
+    compileSdkVersion(30)
 
     defaultConfig {
         minSdkVersion(21)

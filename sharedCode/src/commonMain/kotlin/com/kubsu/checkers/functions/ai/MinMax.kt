@@ -9,21 +9,21 @@ import kotlin.math.*
 
 internal fun GameState.getBestMoveOrNull(
     depth: Int = 6,
-    player: MaximizingPlayer = MaximizingPlayer.Self(activePlayer.color),
+    player: MaximizingPlayer = MaximizingPlayer.Self(activePlayer),
     data: MinMaxData = MinMaxData(alpha = Int.MIN_VALUE, beta = Int.MAX_VALUE)
 ): Node? =
     board
         .getAllMovesSequence(player)
-        .map { board -> Node(board, board.minimax(depth - 1, player.enemy(), data)) }
+        .map { board -> Node(board, board.minMax(depth - 1, player.enemy(), data)) }
         .maxByOrNull(Node::eval)
 
-internal fun Board.minimax(depth: Int, player: MaximizingPlayer, data: MinMaxData): Int =
+internal fun Board.minMax(depth: Int, player: MaximizingPlayer, data: MinMaxData): Int =
     if (depth == 0) {
         evaluation(player)
     } else {
         var minMaxData = data
         getAllMovesSequence(player)
-            .map { board -> board.minimax(depth - 1, player.enemy(), minMaxData) }
+            .map { board -> board.minMax(depth - 1, player.enemy(), minMaxData) }
             .completableFold(initial = null) { old, new ->
                 player
                     .bestEval(old ?: new, new)
@@ -38,7 +38,7 @@ internal fun Board.minimax(depth: Int, player: MaximizingPlayer, data: MinMaxDat
 private fun Board.getAllMovesSequence(player: MaximizingPlayer): Sequence<Board> =
     filterIsInstance<Cell.Piece>()
         .asSequence()
-        .filter(player::isSameColor)
+        .filter(player::isSelfPiece)
         .map { startCell ->
             when (startCell) {
                 is Cell.Piece.Man -> getAvailableCellsSequence(startCell)
@@ -52,10 +52,10 @@ internal fun Board.evaluation(player: MaximizingPlayer): Int {
     val manCells = pieceList.filterIsInstance<Cell.Piece.Man>()
     val kingCells = pieceList.filterIsInstance<Cell.Piece.King>()
 
-    val playerMans = manCells.count(player::isSameColor)
-    val playerKings = kingCells.count(player::isSameColor)
-    val enemyMans = manCells.count(player::isEnemyColor)
-    val enemyKings = kingCells.count(player::isEnemyColor)
+    val playerMans = manCells.count(player::isSelfPiece)
+    val playerKings = kingCells.count(player::isSelfPiece)
+    val enemyMans = manCells.count(player::isEnemyPiece)
+    val enemyKings = kingCells.count(player::isEnemyPiece)
 
     return when (0) {
         playerMans + playerKings -> Int.MIN_VALUE

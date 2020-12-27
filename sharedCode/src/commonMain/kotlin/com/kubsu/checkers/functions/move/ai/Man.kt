@@ -4,9 +4,9 @@ import com.kubsu.checkers.data.entities.*
 
 internal fun Board.getAvailableCellsSequence(current: Cell.Piece.Man): Sequence<Board> =
     increasesSequence
-        .mapNotNull { increase -> getAvailableCells(current, increase)?.board }
+        .mapNotNull { increase -> getAvailableMoveOrNull(current, increase)?.first }
 
-internal fun Board.getAvailableCells(current: Cell.Piece.Man, increase: Increase): AIMove? =
+private fun Board.getAvailableMoveOrNull(current: Cell.Piece.Man, increase: Increase): AIMove? =
     when (val cell = getOrNull(current, increase)) {
         is Cell.Piece -> if (cell isEnemy current)
             attackAiMoveOrNull(current, cell, increase)

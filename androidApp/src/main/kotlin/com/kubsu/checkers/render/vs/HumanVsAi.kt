@@ -4,8 +4,8 @@ import com.kubsu.checkers.GameType
 import com.kubsu.checkers.data.game.UserState
 import com.kubsu.checkers.fold
 import com.kubsu.checkers.functions.gameResultOrNull
-import com.kubsu.checkers.functions.move.ai.aIMove
-import com.kubsu.checkers.functions.move.human.move
+import com.kubsu.checkers.functions.move.ai.makeAIMove
+import com.kubsu.checkers.functions.move.human.makeMove
 import com.kubsu.checkers.render.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -45,7 +45,7 @@ internal fun UiState.makeMove(
     render(
         tableLayout = tableLayout,
         onClick = { clickedCell ->
-            userState.move(clickedCell).fold(
+            userState.makeMove(clickedCell).fold(
                 ifLeft = onFail,
                 ifRight = {
                     if (userState.isUserMadeMove(userState = it)) {
@@ -60,13 +60,13 @@ internal fun UiState.makeMove(
 }
 
 internal fun UserState.isUserMadeMove(userState: UserState): Boolean =
-    userState.gameState.activePlayer.color != gameState.activePlayer.color
+    userState.gameState.activePlayer != gameState.activePlayer
 
 internal fun UiState.makeMove(gameType: GameType.HumanVsAi, activePlayer: ActivePlayer.Ai) {
     val gameState = userState.gameState
     render(tableLayout)
     scope.launch(Dispatchers.Main) {
-        aIMove(gameState).fold(
+        makeAIMove(gameState).fold(
             ifLeft = onFail,
             ifRight = { copy(userState = it).updateGame(gameType, activePlayer.enemy) }
         )

@@ -1,5 +1,6 @@
 package com.kubsu.checkers.data.entities
 
+/** Current board state. */
 typealias Board = Matrix<Cell?>
 
 @Suppress("UNUSED")

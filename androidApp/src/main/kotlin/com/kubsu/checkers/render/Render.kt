@@ -72,7 +72,7 @@ internal fun ImageView.addClickListener(
             onClick(current)
         }
     }
-    if (current == userState.startCell) {
+    if (current == userState.startPiece) {
         setBackgroundColor(Color.GREEN)
     }
 }

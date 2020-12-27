@@ -5,14 +5,47 @@ import com.kubsu.checkers.data.entities.increasesSequence
 
 internal fun Board.getAvailableCellsSequence(current: Cell.Piece.King): Sequence<Board> =
     increasesSequence
-        .map { increase -> getAvailableCells(current, increase).map(AIMove::board) }
+        .map { increase -> getAvailableMoves(current, increase) }
         .flatten()
 
-internal fun Board.getAvailableCells(
+internal fun Board.attack(
+    current: Cell.Piece.King,
+    enemy: Cell.Piece,
+    increase: Increase,
+    enemyCount: Int
+): List<Board> =
+    attackAiMoveOrNull(current, enemy, increase)
+        ?.let { (board, updatedCell) ->
+            val next = board.getAvailableMoves(
+                current = updatedCell as Cell.Piece.King,
+                increase = increase,
+                enemyCount = enemyCount + 1
+            )
+            listOf(board) + next
+        }
+        ?: emptyList()
+
+internal fun Board.simpleMove(
+    current: Cell.Piece.King,
+    cell: Cell.Empty,
+    increase: Increase,
+    enemyCount: Int
+): List<Board> =
+    aiMove(current = current, new = cell)
+        .let { (board, updatedCell) ->
+            val next = board.getAvailableMoves(
+                current = updatedCell as Cell.Piece.King,
+                increase = increase,
+                enemyCount = enemyCount
+            )
+            listOf(board) + next
+        }
+
+private fun Board.getAvailableMoves(
     current: Cell.Piece.King,
     increase: Increase,
     enemyCount: Int = 0
-): List<AIMove> =
+): List<Board> =
     when (val cell = getOrNull(current, increase)) {
         is Cell.Piece ->
             if (enemyCount == 0 && cell isEnemy current)
@@ -25,36 +58,3 @@ internal fun Board.getAvailableCells(
 
         null -> emptyList()
     }
-
-internal fun Board.attack(
-    current: Cell.Piece.King,
-    enemy: Cell.Piece,
-    increase: Increase,
-    enemyCount: Int
-): List<AIMove> =
-    attackAiMoveOrNull(current, enemy, increase)
-        ?.let {
-            val next = it.board.getAvailableCells(
-                current = it.updatedCell as Cell.Piece.King,
-                increase = increase,
-                enemyCount = enemyCount + 1
-            )
-            listOf(it) + next
-        }
-        ?: emptyList()
-
-internal fun Board.simpleMove(
-    current: Cell.Piece.King,
-    cell: Cell.Empty,
-    increase: Increase,
-    enemyCount: Int
-): List<AIMove> =
-    aiMove(current = current, new = cell)
-        .let {
-            val next = it.board.getAvailableCells(
-                current = it.updatedCell as Cell.Piece.King,
-                increase = increase,
-                enemyCount = enemyCount
-            )
-            listOf(it) + next
-        }

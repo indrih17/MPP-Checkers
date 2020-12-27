@@ -27,7 +27,7 @@ class GameActivity : AppCompatActivity() {
                 tableLayout = board_table_layout,
                 userState = UserState(
                     gameState = createGameState(playerColor = CellColor.Light),
-                    startCell = null
+                    startPiece = null
                 ),
                 scope = mainScope,
                 updateData = ::updateData,
@@ -50,14 +50,14 @@ class GameActivity : AppCompatActivity() {
         toast(
             when (failure) {
                 is Failure.IncorrectMove -> "Некорректный ход"
-                is Failure.NoMoves -> "Отстутствуют ходы!"
+                Failure.NoMoves -> "Отстутствуют ходы!"
             }
         )
 
     @SuppressLint("SetTextI18n")
     private fun updateData(state: GameState) {
         score_text_view.text = "${state.score.dark}:${state.score.light}"
-        message_text_view.text = when (state.activePlayer.color) {
+        message_text_view.text = when (state.activePlayer) {
             CellColor.Light -> "Ходит игрок №1 (Белые)"
             CellColor.Dark -> "Ходит игрок №2 (Чёрные)"
         }
