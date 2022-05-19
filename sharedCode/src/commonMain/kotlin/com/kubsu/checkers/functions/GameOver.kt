@@ -5,6 +5,7 @@ import com.kubsu.checkers.data.entities.CellColor
 import com.kubsu.checkers.data.entities.filterIsInstance
 import com.kubsu.checkers.data.entities.piecesAmount
 import com.kubsu.checkers.data.game.GameState
+import com.kubsu.checkers.data.game.getScore
 
 sealed class GameResult {
     object LightWon : GameResult()
@@ -12,12 +13,14 @@ sealed class GameResult {
     object Draw : GameResult()
 }
 
-fun GameState.gameResultOrNull(): GameResult? =
-    when (board.piecesAmount) {
+fun GameState.gameResultOrNull(): GameResult? {
+    val score = board.getScore()
+    return when (board.piecesAmount) {
         score.light -> GameResult.LightWon
         score.dark -> GameResult.DarkWon
         else -> drawOrNull()
     }
+}
 
 internal fun GameState.drawOrNull(): GameResult.Draw? {
     val piecesList = board.filterIsInstance<Cell.Piece>()

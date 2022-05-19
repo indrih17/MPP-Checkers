@@ -1,28 +1,21 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.*
 
 plugins {
     id("com.android.application")
     kotlin("android")
-    kotlin("android.extensions")
+    id("kotlin-parcelize")
 }
 
 android {
-    compileSdkVersion(30)
-    buildToolsVersion("30.0.2")
-
+    compileSdk = 32
     defaultConfig {
-        val applicationName = "checkers"
-        applicationId = "com.kubsu.$applicationName"
+        applicationId = "com.kubsu.checkers"
 
-        minSdkVersion(21)
-        targetSdkVersion(30)
+        minSdk = 24
+        targetSdk = 32
 
-        versionName = "0.2.1"
-        versionCode = 7
-
-        base.archivesBaseName = "${applicationName}_$versionName"
-        testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
+        versionName = "0.2.2"
+        versionCode = 8
     }
 
     val localProps = Properties()
@@ -59,38 +52,13 @@ android {
         }
     }
 
-    packagingOptions {
-        exclude("META-INF/*.kotlin_module")
-    }
-
-    sourceSets {
-        val main by getting {
-            java.srcDirs("src/main/kotlin")
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    androidExtensions {
-        isExperimental = true
-    }
-
     buildFeatures {
         viewBinding = true
     }
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
-
 dependencies {
     implementation(project(":sharedCode"))
-    implementation("androidx.appcompat:appcompat:1.2.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.2.0")
+    implementation("androidx.appcompat:appcompat:1.4.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.1")
 }

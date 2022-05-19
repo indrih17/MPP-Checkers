@@ -17,9 +17,8 @@ class MinMaxTests {
         val gameState = GameState(
             board = defaultBoard
                 .update(Cell.Piece.Man(7, 2, color))
-                .update(Cell.Piece.Man(5, 0, color.enemy()))
-                .update(Cell.Piece.Man(5, 4, color.enemy())),
-            score = Score(0, 0),
+                .update(Cell.Piece.Man(5, 0, color.enemy))
+                .update(Cell.Piece.Man(5, 4, color.enemy)),
             activePlayer = CellColor.Light,
             simpleMoves = 0
         )
@@ -27,8 +26,8 @@ class MinMaxTests {
             Node(
                 board = defaultBoard
                     .update(Cell.Piece.Man(6, 1, color))
-                    .update(Cell.Piece.Man(5, 0, color.enemy()))
-                    .update(Cell.Piece.Man(5, 4, color.enemy())),
+                    .update(Cell.Piece.Man(5, 0, color.enemy))
+                    .update(Cell.Piece.Man(5, 4, color.enemy)),
                 eval = -2147483648
             ),
             gameState.getBestMoveOrNull()
@@ -39,9 +38,8 @@ class MinMaxTests {
         val gameState = GameState(
             board = defaultBoard
                 .update(Cell.Piece.Man(6, 3, color))
-                .update(Cell.Piece.Man(4, 1, color.enemy()))
-                .update(Cell.Piece.Man(3, 6, color.enemy())),
-            score = Score(0, 0),
+                .update(Cell.Piece.Man(4, 1, color.enemy))
+                .update(Cell.Piece.Man(3, 6, color.enemy)),
             activePlayer = CellColor.Light,
             simpleMoves = 0
         )
@@ -49,8 +47,8 @@ class MinMaxTests {
             Node(
                 board = defaultBoard
                     .update(Cell.Piece.Man(5, 2, color))
-                    .update(Cell.Piece.Man(4, 1, color.enemy()))
-                    .update(Cell.Piece.Man(3, 6, color.enemy())),
+                    .update(Cell.Piece.Man(4, 1, color.enemy))
+                    .update(Cell.Piece.Man(3, 6, color.enemy)),
                 eval = Int.MIN_VALUE
             ),
             gameState.getBestMoveOrNull()
@@ -61,8 +59,7 @@ class MinMaxTests {
         val gameState = GameState(
             board = defaultBoard
                 .update(Cell.Piece.King(7, 2, color))
-                .update(Cell.Piece.Man(5, 4, color.enemy())),
-            score = Score(0, 0),
+                .update(Cell.Piece.Man(5, 4, color.enemy)),
             activePlayer = CellColor.Light,
             simpleMoves = 0
         )

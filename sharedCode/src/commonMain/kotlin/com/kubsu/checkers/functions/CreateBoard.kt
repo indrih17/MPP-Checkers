@@ -2,17 +2,15 @@ package com.kubsu.checkers.functions
 
 import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.game.GameState
-import com.kubsu.checkers.data.game.Score
 
 fun createGameState(playerColor: CellColor) = GameState(
-    board = createBoard(),
-    score = Score(0, 0),
+    board = createBoard(size = 8),
     simpleMoves = 0,
     activePlayer = playerColor
 )
 
-fun createBoard(): Board =
-    matrix(size = 8) { row, column ->
+fun createBoard(size: Int): Board =
+    matrix(size) { row, column ->
         if (isAccessible(row, column))
             when (row) {
                 in darkRows -> Cell.Piece.Man(row, column, CellColor.Dark)

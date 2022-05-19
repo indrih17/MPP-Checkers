@@ -9,6 +9,7 @@ import com.kubsu.checkers.data.Failure
 import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.game.GameState
 import com.kubsu.checkers.data.game.UserState
+import com.kubsu.checkers.data.game.getScore
 import com.kubsu.checkers.databinding.ActivityGameBinding
 import com.kubsu.checkers.functions.*
 import com.kubsu.checkers.render.UiState
@@ -53,7 +54,8 @@ class GameActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun updateData(state: GameState) = with(binding) {
-        scoreTextView.text = "${state.score.dark}:${state.score.light}"
+        val score = state.board.getScore()
+        scoreTextView.text = "${score.dark}:${score.light}"
         messageTextView.setText(
             when (state.activePlayer) {
                 CellColor.Light -> R.string.light_moves

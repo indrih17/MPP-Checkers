@@ -1,8 +1,5 @@
 package com.kubsu.checkers.data.entities
 
-typealias Row = Int
-typealias Column = Int
-
 /**
  * - Man Шашка по-английски.
  * - King Дамка.
@@ -26,31 +23,32 @@ sealed class Cell(open val row: Row, open val column: Column) {
     data class Empty(override val row: Row, override val column: Column) : Cell(row, column)
 
     override fun toString(): String = when (this) {
-        is Piece.Man -> if (color is CellColor.Light) "w" else "b"
-        is Piece.King -> if (color is CellColor.Light) "W" else "B"
+        is Piece.Man -> if (color == CellColor.Light) "w" else "b"
+        is Piece.King -> if (color == CellColor.Light) "W" else "B"
         is Empty -> " "
     }
 }
 
-fun king(man: Cell.Piece.Man) =
-    Cell.Piece.King(man.row, man.column, man.color)
-
 fun Cell.Piece.toEmpty() =
     Cell.Empty(row, column)
 
-fun empty(piece: Cell.Piece) =
-    Cell.Empty(piece.row, piece.column)
+fun king(man: Cell.Piece.Man) =
+    Cell.Piece.King(man.row, man.column, man.color)
+
+enum class CellColor {
+    Light { override val enemy: CellColor get() = Dark },
+    Dark { override val enemy: CellColor get() = Light };
+
+    abstract val enemy: CellColor
+}
 
 infix fun Cell.Piece.isEnemy(cell: Cell.Piece): Boolean =
-    color != cell.color
+    color.enemy == cell.color
 
-infix fun Cell.Piece.isSameColor(cell: Cell.Piece): Boolean =
-    color == cell.color
-
-inline infix fun <reified T : Cell> T.updateCoordinates(new: Cell): T =
+@Suppress("UNCHECKED_CAST")
+infix fun < T : Cell> T.updateCoordinates(new: Cell): T =
     when (val cell: Cell = this) {
         is Cell.Piece.King -> cell.copy(new.row, new.column) as T
         is Cell.Piece.Man -> cell.copy(new.row, new.column) as T
         is Cell.Empty -> cell.copy(new.row, new.column) as T
     }
-

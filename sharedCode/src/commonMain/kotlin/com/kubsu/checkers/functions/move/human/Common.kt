@@ -5,6 +5,7 @@ import com.kubsu.checkers.data.Failure
 import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.game.*
 import com.kubsu.checkers.background
+import com.kubsu.checkers.functions.move.move
 import com.kubsu.checkers.map
 import com.kubsu.checkers.right
 
@@ -17,13 +18,13 @@ internal fun UserState.move(finishCell: Cell): Either<Failure.IncorrectMove, Use
     } else {
         when (finishCell) {
             is Cell.Piece ->
-                if (startPiece isSameColor finishCell)
+                if (startPiece.color == finishCell.color)
                     UserState(gameState, finishCell).right()
                 else
                     this.right()
 
             is Cell.Empty ->
-                gameState.updateGameState(startPiece, finishCell, gameState.score)
+                gameState.updateGameState(startPiece, finishCell)
         }
     }
 
@@ -36,32 +37,31 @@ private fun justSelected(gameState: GameState, finish: Cell): UserState =
 private fun GameState.updateGameState(
     start: Cell.Piece,
     finish: Cell.Empty,
-    score: Score
 ): Either<Failure.IncorrectMove, UserState> =
     board
-        .move(start, finish, score, simpleMoves)
+        .move(start, finish, simpleMoves)
         .map { UserState(gameState = it, startPiece = null) }
 
 private fun Board.move(
     piece: Cell.Piece,
     destination: Cell.Empty,
-    score: Score,
     simpleMoves: Int
 ): Either<Failure.IncorrectMove, GameState> =
     when (piece) {
-        is Cell.Piece.Man -> move(piece, destination, score, simpleMoves)
-        is Cell.Piece.King -> move(piece, destination, score, simpleMoves)
+        is Cell.Piece.Man -> move(piece, destination, simpleMoves)
+        is Cell.Piece.King -> move(piece, destination, simpleMoves)
     }
 
 internal fun Board.simpleMove(
     piece: Cell.Piece,
     destination: Cell.Empty,
-    score: Score,
     simpleMoves: Int
 ) =
     GameState(
-        board = swap(piece, destination),
-        score = score,
+        board = when (piece) {
+            is Cell.Piece.Man -> move(piece, destination)
+            is Cell.Piece.King -> move(piece, destination)
+        }.first,
         simpleMoves = simpleMoves + 1,
-        activePlayer = piece.color.enemy()
+        activePlayer = piece.color.enemy
     )

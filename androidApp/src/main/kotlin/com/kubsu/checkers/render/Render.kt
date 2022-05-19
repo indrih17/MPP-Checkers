@@ -39,10 +39,10 @@ fun Context.cellImageView(cell: Cell?) = ImageView(this).apply {
 }
 
 private val Cell.Piece.Man.res: Int
-    get() = if (color is CellColor.Light) R.drawable.white_man else R.drawable.black_man
+    get() = if (color == CellColor.Light) R.drawable.white_man else R.drawable.black_man
 
 private val Cell.Piece.King.res: Int
-    get() = if (color is CellColor.Light) R.drawable.white_king else R.drawable.black_king
+    get() = if (color == CellColor.Light) R.drawable.white_king else R.drawable.black_king
 
 fun UiState.render(tableLayout: TableLayout, onClick: (suspend (Cell) -> Unit)? = null) {
     val board = userState.gameState.board

@@ -4,9 +4,8 @@ import com.kubsu.checkers.Either
 import com.kubsu.checkers.data.Failure
 import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.game.GameState
-import com.kubsu.checkers.data.game.Score
-import com.kubsu.checkers.data.game.updateFor
 import com.kubsu.checkers.difference
+import com.kubsu.checkers.functions.move.kill
 import com.kubsu.checkers.left
 import com.kubsu.checkers.right
 import kotlinx.collections.immutable.ImmutableList
@@ -15,17 +14,16 @@ import kotlinx.collections.immutable.toImmutableList
 internal fun Board.move(
     king: Cell.Piece.King,
     destination: Cell.Empty,
-    score: Score,
     simpleMoves: Int
 ): Either<Failure.IncorrectMove, GameState> =
     if (king onDiagonal destination) {
         val intermediateCells = getIntermediateCells(king, destination)
         if (isSimpleMove(intermediateCells)) {
-            simpleMove(king, destination, score, simpleMoves).right()
+            simpleMove(king, destination, simpleMoves).right()
         } else {
             val enemy = intermediateCells.geSingleEnemyOrNull(king)
             if (enemy != null && isAttack(king, enemy))
-                attack(king, destination, enemy, score).right()
+                attack(king, destination, enemy).right()
             else
                 Failure.IncorrectMove(king, destination).left()
         }
@@ -83,11 +81,9 @@ private fun Board.attack(
     king: Cell.Piece.King,
     destination: Cell.Empty,
     enemy: Cell.Piece,
-    score: Score
 ) =
     GameState(
-        board = swap(king, destination).update(enemy.toEmpty()),
-        score = score updateFor king.color,
-        activePlayer = king.color.enemy(),
+        board = kill(king, enemy, destination).first,
+        activePlayer = king.color.enemy,
         simpleMoves = 0
     )

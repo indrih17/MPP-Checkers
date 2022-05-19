@@ -1,5 +1,11 @@
-enableFeaturePreview("GRADLE_METADATA")
+pluginManagement {
+    repositories {
+        google()
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
 
 rootProject.name = "MPP-Checkers"
-
-include(":sharedCode", ":androidApp")
+include(":androidApp")
+include(":sharedCode")

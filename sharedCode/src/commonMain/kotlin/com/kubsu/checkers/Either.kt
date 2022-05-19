@@ -7,12 +7,6 @@ sealed class Either<out L, out R> {
     companion object
 }
 
-infix fun <L> Either.Companion.left(left: L): Either.Left<L> =
-    Either.Left(left)
-
-infix fun <R> Either.Companion.right(right: R): Either.Right<R> =
-    Either.Right(right)
-
 inline infix fun <A, B, C> Either<A, B>.map(f: (B) -> C): Either<A, C> = when (this) {
     is Either.Left -> this
     is Either.Right -> Either.Right(f(value))
