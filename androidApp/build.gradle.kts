@@ -53,12 +53,29 @@ android {
     }
 
     buildFeatures {
-        viewBinding = true
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.2.0-beta02"
     }
 }
+
+val composeVersion = "1.2.0-beta02"
 
 dependencies {
     implementation(project(":sharedCode"))
     implementation("androidx.appcompat:appcompat:1.4.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.1")
+
+    // Compose
+    val composeVersion = "1.2.0-beta02"
+    implementation("androidx.activity:activity-compose:1.4.0")
+    implementation("androidx.compose.foundation:foundation:$composeVersion")
+
+    // Material Design
+    implementation("com.google.android.material:material:1.6.0")
+    implementation("androidx.compose.material3:material3:1.0.0-alpha12")
+
+    // TEA
+    implementation("family.amma:keemun:1.2.3")
 }

@@ -1,26 +1,18 @@
 package com.kubsu.checkers.functions.move.ai
 
-import com.kubsu.checkers.Either
-import com.kubsu.checkers.data.Failure
 import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.game.GameState
-import com.kubsu.checkers.data.game.UserState
-import com.kubsu.checkers.background
 import com.kubsu.checkers.data.game.apply
+import com.kubsu.checkers.functions.GameResult
 import com.kubsu.checkers.functions.ai.getBestMoveOrNull
 import com.kubsu.checkers.functions.move.kill
-import com.kubsu.checkers.left
-import com.kubsu.checkers.right
 
-suspend fun makeAIMove(gameState: GameState): Either<Failure, UserState> =
-    background { aiMove(gameState) }
-
-internal fun aiMove(gameState: GameState): Either<Failure, UserState> =
+fun aiMove(gameState: GameState.Continues): GameState =
     gameState
         .getBestMoveOrNull()
         ?.board
-        ?.let { UserState(gameState = gameState.apply(board = it), startPiece = null).right() }
-        ?: Failure.NoMoves.left()
+        ?.let { gameState.apply(board = it) }
+        ?: GameState.GameOver(board = gameState.board, gameResult = GameResult.NoMoves)
 
 /** @return move for artificial intelligence, if possible; otherwise null. */
 internal fun Board.attackAiMoveOrNull(current: Cell.Piece.King, enemy: Cell.Piece, increase: Increase): Pair<Board, Cell.Piece.King>? =

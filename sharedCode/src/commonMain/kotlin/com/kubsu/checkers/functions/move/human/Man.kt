@@ -4,19 +4,20 @@ import com.kubsu.checkers.*
 import com.kubsu.checkers.data.Failure
 import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.game.GameState
+import com.kubsu.checkers.data.game.apply
 import com.kubsu.checkers.functions.move.kill
+import com.kubsu.checkers.functions.move.move
 
-internal fun Board.move(
+fun GameState.Continues.move(
     man: Cell.Piece.Man,
     destination: Cell.Empty,
-    simpleMoves: Int
 ): Either<Failure.IncorrectMove, GameState> =
     if (isSimpleMove(man, destination)) {
-        simpleMove(man, destination, simpleMoves).right()
+        apply(board = board.move(man, destination).first).right()
     } else {
-        val middleCell = middle(man, destination)
+        val middleCell = board.middle(man, destination)
         if (middleCell is Cell.Piece && isAttack(man, destination, middleCell))
-            attack(man, destination, middleCell).right()
+            apply(board = board.kill(man, middleCell, destination).first).right()
         else
             Failure.IncorrectMove(man, destination).left()
     }
@@ -56,18 +57,6 @@ internal fun isAttack(
 @Suppress("NOTHING_TO_INLINE")
 private inline fun isInAttackZone(man: Cell.Piece.Man, cell: Cell.Empty): Boolean =
     difference(man.row, cell.row) == 2 && difference(man.column, cell.column) == 2
-
-/** Update [GameState]: [enemy] killed, [man] goes to [destination]. */
-internal fun Board.attack(
-    man: Cell.Piece.Man,
-    destination: Cell.Empty,
-    enemy: Cell.Piece,
-) =
-    GameState(
-        board = kill(man, enemy, destination).first,
-        activePlayer = man.color.enemy,
-        simpleMoves = 0
-    )
 
 /** Average number between [a] and [b]. */
 @Suppress("NOTHING_TO_INLINE")

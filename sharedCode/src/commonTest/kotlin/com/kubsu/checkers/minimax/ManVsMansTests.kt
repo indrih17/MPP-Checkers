@@ -16,7 +16,7 @@ class ManVsMansTests {
 
     @Test
     fun test1() {
-        val gameState = GameState(
+        val gameState = GameState.Continues(
             board = defaultBoard
                 .update(Cell.Piece.Man(7, 2, color))
                 .update(Cell.Piece.Man(6, 1, color.enemy)),
@@ -34,7 +34,7 @@ class ManVsMansTests {
 
     @Test
     fun test2() {
-        val gameState = GameState(
+        val gameState = GameState.Continues(
             board = defaultBoard
                 .update(Cell.Piece.Man(6, 3, color))
                 .update(Cell.Piece.Man(5, 4, color.enemy)),
@@ -52,7 +52,7 @@ class ManVsMansTests {
 
     @Test
     fun test3() {
-        val gameState = GameState(
+        val gameState = GameState.Continues(
             board = defaultBoard
                 .update(Cell.Piece.Man(7, 2, color))
                 .update(Cell.Piece.Man(5, 4, color.enemy)),
@@ -72,7 +72,7 @@ class ManVsMansTests {
 
     @Test
     fun test4() {
-        val gameState = GameState(
+        val gameState = GameState.Continues(
             board = defaultBoard
                 .update(Cell.Piece.Man(5, 4, color))
                 .update(Cell.Piece.Man(2, 7, color.enemy))

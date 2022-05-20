@@ -1,31 +1,54 @@
 package com.kubsu.checkers.data.entities
 
+import com.kubsu.checkers.Immutable
+import com.kubsu.checkers.Parcelable
+import com.kubsu.checkers.Parcelize
+import kotlinx.serialization.Serializable
+
 /**
  * - Man Шашка по-английски.
  * - King Дамка.
  * - Piece Фигура.
  */
-sealed class Cell(open val row: Row, open val column: Column) {
-    sealed class Piece(row: Row, column: Column, open val color: CellColor) : Cell(row, column) {
+@Serializable
+@Immutable
+sealed class Cell : Parcelable {
+    abstract val row: Row
+    abstract val column: Column
+
+    @Serializable
+    @Immutable
+    sealed class Piece : Cell() {
+        abstract val color: CellColor
+
+        @Serializable
+        @Parcelize
+        @Immutable
         data class Man(
             override val row: Row,
             override val column: Column,
             override val color: CellColor
-        ) : Piece(row, column, color)
+        ) : Piece() {
+            override fun toString(): String = if (color == CellColor.Light) "w" else "b"
+        }
 
+        @Serializable
+        @Parcelize
+        @Immutable
         data class King(
             override val row: Row,
             override val column: Column,
             override val color: CellColor
-        ) : Piece(row, column, color)
+        ) : Piece() {
+            override fun toString(): String = if (color == CellColor.Light) "W" else "B"
+        }
     }
 
-    data class Empty(override val row: Row, override val column: Column) : Cell(row, column)
-
-    override fun toString(): String = when (this) {
-        is Piece.Man -> if (color == CellColor.Light) "w" else "b"
-        is Piece.King -> if (color == CellColor.Light) "W" else "B"
-        is Empty -> " "
+    @Serializable
+    @Parcelize
+    @Immutable
+    data class Empty(override val row: Row, override val column: Column) : Cell() {
+        override fun toString(): String = " "
     }
 }
 

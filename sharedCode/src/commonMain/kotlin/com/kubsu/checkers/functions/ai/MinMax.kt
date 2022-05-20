@@ -8,7 +8,7 @@ import com.kubsu.checkers.functions.move.ai.getAvailableCellsSequence
 import kotlin.math.max
 import kotlin.math.min
 
-internal fun GameState.getBestMoveOrNull(
+internal fun GameState.Continues.getBestMoveOrNull(
     depth: Int = 6,
     player: MaximizingPlayer = MaximizingPlayer.Self(activePlayer),
     data: MinMaxData = MinMaxData(alpha = Int.MIN_VALUE, beta = Int.MAX_VALUE)

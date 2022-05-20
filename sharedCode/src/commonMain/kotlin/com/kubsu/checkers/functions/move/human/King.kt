@@ -4,26 +4,27 @@ import com.kubsu.checkers.Either
 import com.kubsu.checkers.data.Failure
 import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.game.GameState
+import com.kubsu.checkers.data.game.apply
 import com.kubsu.checkers.difference
 import com.kubsu.checkers.functions.move.kill
+import com.kubsu.checkers.functions.move.move
 import com.kubsu.checkers.left
 import com.kubsu.checkers.right
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
-internal fun Board.move(
+fun GameState.Continues.move(
     king: Cell.Piece.King,
     destination: Cell.Empty,
-    simpleMoves: Int
 ): Either<Failure.IncorrectMove, GameState> =
     if (king onDiagonal destination) {
-        val intermediateCells = getIntermediateCells(king, destination)
+        val intermediateCells = board.getIntermediateCells(king, destination)
         if (isSimpleMove(intermediateCells)) {
-            simpleMove(king, destination, simpleMoves).right()
+            apply(board = board.move(king, destination).first).right()
         } else {
             val enemy = intermediateCells.geSingleEnemyOrNull(king)
             if (enemy != null && isAttack(king, enemy))
-                attack(king, destination, enemy).right()
+                apply(board = board.kill(king, enemy, destination).first).right()
             else
                 Failure.IncorrectMove(king, destination).left()
         }
@@ -76,14 +77,3 @@ private fun isAttack(king: Cell.Piece.King, piece: Cell.Piece): Boolean =
 
 private fun Iterable<Cell>.geSingleEnemyOrNull(piece: Cell.Piece): Cell.Piece? =
     filterIsInstance<Cell.Piece>().singleOrNull(piece::isEnemy)
-
-private fun Board.attack(
-    king: Cell.Piece.King,
-    destination: Cell.Empty,
-    enemy: Cell.Piece,
-) =
-    GameState(
-        board = kill(king, enemy, destination).first,
-        activePlayer = king.color.enemy,
-        simpleMoves = 0
-    )

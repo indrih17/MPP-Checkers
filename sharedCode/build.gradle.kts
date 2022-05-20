@@ -1,6 +1,8 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    id("kotlin-parcelize")
+    id("kotlinx-serialization")
 }
 
 kotlin {
@@ -16,13 +18,12 @@ kotlin {
         }
     }
 
-    val coroutinesVersion = "1.6.1"
     sourceSets {
         val commonMain by getting {
             dependencies {
                 api(kotlin("stdlib-common"))
                 api("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+                api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
             }
         }
         val commonTest by getting {
@@ -32,8 +33,7 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                api(kotlin("stdlib"))
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
+                api("androidx.compose.ui:ui:1.2.0-beta02")
             }
         }
         val androidTest by getting

@@ -2,7 +2,6 @@ package com.kubsu.checkers.minimax
 
 import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.game.GameState
-import com.kubsu.checkers.data.game.Score
 import com.kubsu.checkers.data.minmax.Node
 import com.kubsu.checkers.defaultBoard
 import com.kubsu.checkers.functions.ai.getBestMoveOrNull
@@ -14,7 +13,7 @@ class MinMaxTests {
     private val color = CellColor.Light
 
     @Test fun manVsMansTest1() {
-        val gameState = GameState(
+        val gameState = GameState.Continues(
             board = defaultBoard
                 .update(Cell.Piece.Man(7, 2, color))
                 .update(Cell.Piece.Man(5, 0, color.enemy))
@@ -35,7 +34,7 @@ class MinMaxTests {
     }
 
     @Test fun manVsMansTest2() {
-        val gameState = GameState(
+        val gameState = GameState.Continues(
             board = defaultBoard
                 .update(Cell.Piece.Man(6, 3, color))
                 .update(Cell.Piece.Man(4, 1, color.enemy))
@@ -56,7 +55,7 @@ class MinMaxTests {
     }
 
     @Test fun kingVsManTest1() {
-        val gameState = GameState(
+        val gameState = GameState.Continues(
             board = defaultBoard
                 .update(Cell.Piece.King(7, 2, color))
                 .update(Cell.Piece.Man(5, 4, color.enemy)),

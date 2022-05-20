@@ -3,8 +3,10 @@ package com.kubsu.checkers.functions
 import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.data.game.GameState
 
-fun createGameState(playerColor: CellColor) = GameState(
-    board = createBoard(size = 8),
+const val BOARD_SIZE = 8
+
+fun createGameState(playerColor: CellColor) = GameState.Continues(
+    board = createBoard(size = BOARD_SIZE),
     simpleMoves = 0,
     activePlayer = playerColor
 )
