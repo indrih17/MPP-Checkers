@@ -1,6 +1,7 @@
 package com.kubsu.checkers
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.kubsu.checkers.data.entities.Board

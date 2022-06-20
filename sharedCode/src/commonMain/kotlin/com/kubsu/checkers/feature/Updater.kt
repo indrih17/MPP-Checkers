@@ -1,22 +1,27 @@
-package feature
+package com.kubsu.checkers.feature
 
 import com.kubsu.checkers.data.Failure
 import com.kubsu.checkers.data.entities.Cell
+import com.kubsu.checkers.data.entities.CellColor
 import com.kubsu.checkers.data.game.GameState
+import com.kubsu.checkers.functions.createGameState
 import family.amma.keemun.Update
 
 sealed class CheckersMsg
 
 sealed class ExternalMsg : CheckersMsg() {
     data class CellSelected(val cell: Cell) : ExternalMsg()
+    data class ChangeGameType(val gameType: GameType) : ExternalMsg()
 }
 
 sealed class InternalMsg : CheckersMsg() {
     data class ShowFailure(val failure: Failure) : InternalMsg()
-    data class ApplyGameState(val gameState: GameState) : InternalMsg()
+    data class ApplyGameState(val gameState: GameState, val gameType: GameType) : InternalMsg()
 }
 
 sealed class CheckersEffect {
+    data class UpdateGameType(val gameType: GameType) : CheckersEffect()
+
     data class PerformUserAction(
         val gameState: GameState.Continues,
         val gameType: GameType,
@@ -24,11 +29,28 @@ sealed class CheckersEffect {
         val finishCell: Cell.Empty
     ) : CheckersEffect()
     
-    data class CalculateNextAiMove(val gameState: GameState.Continues) : CheckersEffect()
+    data class CalculateNextAiMove(val gameState: GameState.Continues, val gameType: GameType) : CheckersEffect()
 }
 
 fun externalUpdater() = Update<CheckersState, ExternalMsg, CheckersEffect> { msg, state ->
     when (msg) {
+        is ExternalMsg.ChangeGameType -> {
+            if (state.gameType != msg.gameType) {
+                val defaultGameState = createGameState(playerColor = CellColor.Light)
+                state.copy(
+                    gameType = msg.gameType,
+                    gameState = defaultGameState,
+                    startPiece = null,
+                    failure = null
+                ) to setOfNotNull(
+                    CheckersEffect.UpdateGameType(msg.gameType),
+                    calculateNextAiMoveOrNull(defaultGameState, msg.gameType)
+                )
+            } else {
+                state to emptySet()
+            }
+        }
+
         is ExternalMsg.CellSelected ->
             if (state.gameState is GameState.Continues) {
                 when (msg.cell) {
@@ -64,16 +86,13 @@ fun internalUpdater() = Update<CheckersState, InternalMsg, CheckersEffect> { msg
                 state.copy(failure = msg.failure) to emptySet()
 
             is InternalMsg.ApplyGameState ->
-                state.copy(gameState = msg.gameState, startPiece = null) to setOfNotNull(
-                    if (
-                        msg.gameState is GameState.Continues
-                        && activePlayer(msg.gameState.activePlayer, state.gameType) == ActivePlayer.AI
-                    ) {
-                        CheckersEffect.CalculateNextAiMove(msg.gameState)
-                    } else {
-                        null
-                    }
-                )
+                if (state.gameType == msg.gameType) {
+                    state.copy(gameState = msg.gameState, startPiece = null, failure = null) to setOfNotNull(
+                        calculateNextAiMoveOrNull(msg.gameState, state.gameType)
+                    )
+                } else {
+                    state to emptySet()
+                }
         }
     } else {
         state to emptySet()

@@ -24,6 +24,10 @@ kotlin {
                 api(kotlin("stdlib-common"))
                 api("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
                 api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
+                api("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.3.3")
+
+                // TEA
+                api("family.amma:keemun:1.3.0")
             }
         }
         val commonTest by getting {
@@ -33,7 +37,7 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                api("androidx.compose.ui:ui:1.2.0-beta02")
+                api("androidx.compose.ui:ui:1.2.0-rc01")
             }
         }
         val androidTest by getting

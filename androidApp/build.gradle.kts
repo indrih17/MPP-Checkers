@@ -14,8 +14,8 @@ android {
         minSdk = 24
         targetSdk = 32
 
-        versionName = "0.2.2"
-        versionCode = 8
+        versionName = "0.3.0"
+        versionCode = 9
     }
 
     val localProps = Properties()
@@ -57,25 +57,23 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.2.0-beta02"
+        kotlinCompilerExtensionVersion = "1.2.0-rc01"
     }
 }
 
-val composeVersion = "1.2.0-beta02"
-
 dependencies {
     implementation(project(":sharedCode"))
-    implementation("androidx.appcompat:appcompat:1.4.1")
+    implementation("androidx.appcompat:appcompat:1.4.2")
+
+    // Data store
+    implementation("androidx.datastore:datastore:1.0.0")
 
     // Compose
-    val composeVersion = "1.2.0-beta02"
+    val composeVersion = "1.2.0-rc01"
     implementation("androidx.activity:activity-compose:1.4.0")
     implementation("androidx.compose.foundation:foundation:$composeVersion")
+    implementation("androidx.compose.material3:material3:1.0.0-alpha13")
 
     // Material Design
-    implementation("com.google.android.material:material:1.6.0")
-    implementation("androidx.compose.material3:material3:1.0.0-alpha12")
-
-    // TEA
-    implementation("family.amma:keemun:1.2.3")
+    implementation("com.google.android.material:material:1.6.1")
 }

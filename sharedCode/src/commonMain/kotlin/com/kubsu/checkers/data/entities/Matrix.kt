@@ -4,10 +4,8 @@ import com.kubsu.checkers.persistentList
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toImmutableList
-import kotlin.jvm.JvmInline
 
-@JvmInline
-value class Matrix<T>(val value: PersistentList<PersistentList<T>>) {
+class Matrix<T>(val value: PersistentList<PersistentList<T>>) {
     override fun toString(): String =
         "\n${value.joinToString("\n") { list -> list.joinToString(separator = " ") }}\n"
 }

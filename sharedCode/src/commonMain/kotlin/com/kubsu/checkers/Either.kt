@@ -1,11 +1,8 @@
 package com.kubsu.checkers
 
-@Immutable
 sealed class Either<out L, out R> {
-    @Immutable
     data class Left<T>(val value: T) : Either<T, Nothing>()
 
-    @Immutable
     data class Right<T>(val value: T) : Either<Nothing, T>()
 
     companion object

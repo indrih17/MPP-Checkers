@@ -1,8 +1,5 @@
 package com.kubsu.checkers.data.entities
 
-import com.kubsu.checkers.Immutable
-import com.kubsu.checkers.Parcelable
-import com.kubsu.checkers.Parcelize
 import kotlinx.serialization.Serializable
 
 /**
@@ -11,19 +8,15 @@ import kotlinx.serialization.Serializable
  * - Piece Фигура.
  */
 @Serializable
-@Immutable
-sealed class Cell : Parcelable {
+sealed class Cell {
     abstract val row: Row
     abstract val column: Column
 
     @Serializable
-    @Immutable
     sealed class Piece : Cell() {
         abstract val color: CellColor
 
         @Serializable
-        @Parcelize
-        @Immutable
         data class Man(
             override val row: Row,
             override val column: Column,
@@ -33,8 +26,6 @@ sealed class Cell : Parcelable {
         }
 
         @Serializable
-        @Parcelize
-        @Immutable
         data class King(
             override val row: Row,
             override val column: Column,
@@ -45,8 +36,6 @@ sealed class Cell : Parcelable {
     }
 
     @Serializable
-    @Parcelize
-    @Immutable
     data class Empty(override val row: Row, override val column: Column) : Cell() {
         override fun toString(): String = " "
     }

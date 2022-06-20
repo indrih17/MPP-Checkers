@@ -10,6 +10,8 @@ import com.kubsu.checkers.data.entities.CellColor
 import com.kubsu.checkers.data.game.GameState
 import com.kubsu.checkers.data.game.Score
 import com.kubsu.checkers.data.game.getScore
+import com.kubsu.checkers.feature.CheckersState
+import com.kubsu.checkers.feature.GameType
 import com.kubsu.checkers.functions.GameResult
 import family.amma.keemun.StateTransform
 
@@ -28,14 +30,11 @@ fun checkersStateTransform() = StateTransform<CheckersState, ChechersViewState> 
         board = state.gameState.board,
         selectedPiece = state.startPiece,
         score = state.gameState.board.getScore(),
-        message = if (state.failure != null) {
-            when (state.failure) {
-                is Failure.IncorrectMove -> R.string.incorrect_move
-            }
-        } else {
-            when (state.gameState) {
+        message = when (state.failure) {
+            is Failure.IncorrectMove -> R.string.incorrect_move
+            null -> when (val gameState = state.gameState) {
                 is GameState.GameOver ->
-                    when (state.gameState.gameResult) {
+                    when (gameState.gameResult) {
                         GameResult.LightWon -> R.string.light_win
                         GameResult.DarkWon -> R.string.dark_win
                         GameResult.Draw -> R.string.draw
@@ -43,7 +42,7 @@ fun checkersStateTransform() = StateTransform<CheckersState, ChechersViewState> 
                     }
 
                 is GameState.Continues ->
-                    when (state.gameState.activePlayer) {
+                    when (gameState.activePlayer) {
                         CellColor.Light -> R.string.light_moves
                         CellColor.Dark -> R.string.dark_moves
                     }

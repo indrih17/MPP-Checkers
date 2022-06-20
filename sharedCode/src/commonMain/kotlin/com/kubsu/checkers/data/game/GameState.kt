@@ -1,17 +1,15 @@
 package com.kubsu.checkers.data.game
 
-import com.kubsu.checkers.Immutable
 import com.kubsu.checkers.data.entities.*
 import com.kubsu.checkers.functions.GameResult
 import com.kubsu.checkers.functions.gameResultOrNull
 import kotlinx.serialization.Serializable
 
 @Serializable
-@Immutable
 sealed class GameState {
     abstract val board: @Serializable(with = BoardSerializer::class) Board
 
-    @Immutable
+    @Serializable
     data class GameOver(
         val gameResult: GameResult,
         override val board: @Serializable(with = BoardSerializer::class) Board,
@@ -21,7 +19,7 @@ sealed class GameState {
      * @param activePlayer The player currently taking the move.
      * @param simpleMoves The total number of moves without kills.
      */
-    @Immutable
+    @Serializable
     data class Continues(
         override val board: @Serializable(with = BoardSerializer::class) Board,
         val simpleMoves: Int,
